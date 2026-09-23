@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
 import { BUSINESS_CONFIG } from '@/config/business';
+import { SmoothScrollProvider } from '@/components/layout/SmoothScrollProvider';
 
 export const metadata: Metadata = {
   title: `${BUSINESS_CONFIG.name} | ${BUSINESS_CONFIG.tagline}`,
@@ -14,8 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased font-sans">
-        {children}
+      <body className="antialiased font-sans bg-canvas text-white">
+        <SmoothScrollProvider>
+          {children}
+        </SmoothScrollProvider>
       </body>
     </html>
   );
