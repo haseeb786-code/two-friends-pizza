@@ -1,41 +1,32 @@
-import type { Metadata, Viewport } from 'next';
-import { BUSINESS_CONFIG } from './business';
+import { Metadata, Viewport } from 'next';
 
-/**
- * Standard Viewport Configuration for Next.js 15
- * Enforces mobile-first responsive viewport and dark status bar theme color.
- */
-export const baseViewport: Viewport = {
-  themeColor: '#070707',
-  colorScheme: 'dark',
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-};
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://twofriendspizza.pk';
 
-/**
- * Centralized SEO & Social Metadata Configuration
- * Uses placeholder site URLs and asset targets (no real business copy or tracking keys).
- */
 export const baseMetadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://twofriendspizza.example.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: `${BUSINESS_CONFIG.name} | ${BUSINESS_CONFIG.tagline}`,
-    template: `%s | ${BUSINESS_CONFIG.name}`,
+    default: 'Two Friends Pizza — Dosti Ka Slice',
+    template: '%s | Two Friends Pizza',
   },
-  description: 'Premium artisanal wood-fired pizzas and flame-grilled gourmet burgers crafted with signature ingredients.',
+  description:
+    'Two Friends Pizza — Dosti Ka Slice. Wood-fired pizzas, flame-grilled burgers, shawarma, crispy and deals in Rawat. Order now: 0331-0479696.',
   keywords: [
-    'pizza',
-    'wood-fired pizza',
-    'gourmet burgers',
-    'craft burgers',
-    'fast food',
-    'artisan food',
-    'food delivery',
+    'two friends pizza',
+    'dosti ka slice',
+    'pizza rawat',
+    'burger rawat',
+    'shawarma rawat',
+    'fast food rawat',
+    'pizza chak belli road',
+    'pizza al-haaj afridi market',
+    'crown crust pizza',
+    'malai boti pizza',
+    'zinger burger rawat',
+    'food rawat islamabad',
   ],
-  authors: [{ name: BUSINESS_CONFIG.name }],
-  creator: BUSINESS_CONFIG.name,
-  publisher: BUSINESS_CONFIG.name,
+  authors: [{ name: 'Two Friends Pizza' }],
+  creator: 'Two Friends Pizza',
+  publisher: 'Two Friends Pizza',
   robots: {
     index: true,
     follow: true,
@@ -49,29 +40,70 @@ export const baseMetadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    locale: 'en_US',
-    url: '/',
-    siteName: BUSINESS_CONFIG.name,
-    title: `${BUSINESS_CONFIG.name} | ${BUSINESS_CONFIG.tagline}`,
-    description: 'Experience artisanal wood-fired pizza and flame-grilled gourmet burgers.',
+    locale: 'en_PK',
+    url: SITE_URL,
+    siteName: 'Two Friends Pizza',
+    title: 'Two Friends Pizza — Dosti Ka Slice',
+    description:
+      'Wood-fired pizzas, flame-grilled burgers, shawarma and deals in Rawat. Order: 0331-0479696.',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: `${BUSINESS_CONFIG.name} - Artisanal Pizzas & Gourmet Burgers`,
+        alt: 'Two Friends Pizza — Dosti Ka Slice, Rawat',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${BUSINESS_CONFIG.name} | ${BUSINESS_CONFIG.tagline}`,
-    description: 'Experience artisanal wood-fired pizza and flame-grilled gourmet burgers.',
+    title: 'Two Friends Pizza — Dosti Ka Slice',
+    description:
+      'Wood-fired pizzas, flame-grilled burgers, shawarma and deals in Rawat. Order: 0331-0479696.',
     images: ['/og-image.jpg'],
   },
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+  alternates: {
+    canonical: SITE_URL,
+  },
+};
+
+export const baseViewport: Viewport = {
+  themeColor: '#070707',
+  colorScheme: 'dark',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
+/**
+ * JSON-LD structured data — Restaurant schema
+ * Enables Google rich results (business name, address, phone, menu).
+ */
+export const restaurantJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: 'Two Friends Pizza',
+  description: 'Dosti Ka Slice — Wood-fired pizzas, flame-grilled burgers, shawarma and deals.',
+  url: SITE_URL,
+  telephone: '03310479696',
+  servesCuisine: ['Pizza', 'Burger', 'Shawarma', 'Fast Food'],
+  priceRange: '₨₨',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Al-Haaj Afridi Market, Chota Mera, Main Chak Belli Road Rawat',
+    addressLocality: 'Rawat',
+    addressCountry: 'PK',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 33.5651, // Rawat approximate — update with exact pin from owner
+    longitude: 73.2247,
+  },
+  hasMenu: `${SITE_URL}/#menu`,
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '03310479696',
+    contactType: 'customer service',
+    availableLanguage: ['Urdu', 'English'],
   },
 };

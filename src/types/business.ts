@@ -15,17 +15,23 @@ export interface SocialLinks {
   tiktok?: string;
 }
 
+/**
+ * orderPhone: the number shown on "Order Now" CTAs — 0331-0479696
+ * feedbackPhone: the separate Feedback / Report channel — 0348-5766881
+ * whatsapp: WhatsApp order number (same as orderPhone unless specified otherwise)
+ */
 export interface RestaurantContact {
-  phone: string;
+  orderPhone: string;
+  feedbackPhone: string;
   whatsapp: string;
-  email: string;
+  email?: string;
 }
 
 export interface RestaurantLocation {
   address: string;
   city: string;
   googleMapsUrl: string;
-  coordinates: {
+  coordinates?: {
     latitude: number;
     longitude: number;
   };

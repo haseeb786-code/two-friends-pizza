@@ -23,7 +23,7 @@ export interface CartItem {
 export interface CartState {
   items: CartItem[];
   deliveryFee: number;
-  
+
   // Actions
   addItem: (product: Product, customization?: CartCustomizationSelection, quantity?: number) => void;
   removeItem: (cartItemId: string) => void;
