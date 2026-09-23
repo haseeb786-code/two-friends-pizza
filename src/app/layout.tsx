@@ -1,12 +1,11 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.css';
-import { BUSINESS_CONFIG } from '@/config/business';
 import { SmoothScrollProvider } from '@/components/layout/SmoothScrollProvider';
+import { SkipToContent } from '@/components/ui/SkipToContent';
+import { baseMetadata, baseViewport } from '@/config/metadata';
 
-export const metadata: Metadata = {
-  title: `${BUSINESS_CONFIG.name} | ${BUSINESS_CONFIG.tagline}`,
-  description: 'Premium artisanal pizzas and gourmet flame-grilled burgers made with fresh ingredients.',
-};
+export const metadata: Metadata = baseMetadata;
+export const viewport: Viewport = baseViewport;
 
 export default function RootLayout({
   children,
@@ -14,10 +13,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased font-sans bg-canvas text-white">
+    <html lang="en" className="dark">
+      <body className="antialiased font-sans bg-canvas text-white selection:bg-amber-500/30 selection:text-amber-200">
+        <SkipToContent targetId="main-content" />
         <SmoothScrollProvider>
-          {children}
+          <div id="main-content" tabIndex={-1} className="outline-none min-h-screen">
+            {children}
+          </div>
         </SmoothScrollProvider>
       </body>
     </html>
