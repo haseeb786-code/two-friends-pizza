@@ -1,4 +1,5 @@
 import { Product, ProductSizeOption, ProductVariantOption, ProductAddOnOption } from './menu';
+import { Deal } from './deals';
 
 export interface CartCustomizationSelection {
   size?: ProductSizeOption | null;
@@ -18,6 +19,7 @@ export interface CartItem {
   unitPrice: number;
   itemTotal: number;
   specialInstructions?: string;
+  isDeal?: boolean;
 }
 
 export interface CartState {
@@ -26,6 +28,7 @@ export interface CartState {
 
   // Actions
   addItem: (product: Product, customization?: CartCustomizationSelection, quantity?: number) => void;
+  addDeal: (deal: Deal, quantity?: number) => void;
   removeItem: (cartItemId: string) => void;
   increaseQuantity: (cartItemId: string) => void;
   decreaseQuantity: (cartItemId: string) => void;

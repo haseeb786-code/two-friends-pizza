@@ -124,9 +124,21 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   >
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-semibold text-white truncate">{item.product.name}</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-[13px] font-semibold text-white truncate">{item.product.name}</p>
+                        {item.isDeal && (
+                          <span className="text-[8px] font-bold text-amber-300 bg-amber-500/20 border border-amber-500/30 px-1 py-0.5 rounded uppercase tracking-wider flex-shrink-0">
+                            Deal
+                          </span>
+                        )}
+                      </div>
                       {item.selectedSize && (
                         <p className="text-[11px] text-obsidian-500 mt-px">{item.selectedSize.name}</p>
+                      )}
+                      {item.isDeal && item.specialInstructions && (
+                        <p className="text-[10px] text-obsidian-400 mt-0.5 truncate leading-tight">
+                          {item.specialInstructions}
+                        </p>
                       )}
                       <p className="text-[13px] font-bold text-amber-400 mt-1 tabular-nums">
                         {symbol}{item.itemTotal.toLocaleString()}

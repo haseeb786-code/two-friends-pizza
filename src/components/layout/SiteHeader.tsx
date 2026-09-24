@@ -21,8 +21,14 @@ export function SiteHeader() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const itemCount = useCartStore((s) => s.getItemCount());
+  const [mounted, setMounted] = useState(false);
+  const rawItemCount = useCartStore((s) => s.getItemCount());
+  const itemCount = mounted ? rawItemCount : 0;
   const { name, contact } = BUSINESS_CONFIG;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Track scroll to intensify header bg
   useEffect(() => {

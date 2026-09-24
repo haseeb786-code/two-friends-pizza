@@ -30,7 +30,7 @@ export const DEALS: Deal[] = [
     image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1648896172605-728b7e231165?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=800&q=80',
     ],
   },
   {
@@ -231,7 +231,7 @@ export const DEALS: Deal[] = [
     image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1648896172605-728b7e231165?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=800&q=80',
     ],
   },
   {

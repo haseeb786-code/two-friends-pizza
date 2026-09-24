@@ -4,6 +4,7 @@ import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google';
 import '@/styles/globals.css';
 import { SmoothScrollProvider } from '@/components/layout/SmoothScrollProvider';
 import { SiteHeader } from '@/components/layout/SiteHeader';
+import { SiteBackground } from '@/components/layout/SiteBackground';
 import { SkipToContent } from '@/components/ui/SkipToContent';
 import { baseMetadata, baseViewport, restaurantJsonLd } from '@/config/metadata';
 
@@ -47,6 +48,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased font-sans bg-canvas text-white selection:bg-amber-500/30 selection:text-amber-200">
+        <SiteBackground />
         <SkipToContent targetId="main-content" />
         <SiteHeader />
         <SmoothScrollProvider>

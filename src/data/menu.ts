@@ -435,9 +435,9 @@ export const MENU_PRODUCTS: Product[] = [
     slug: 'chicken-shawarma',
     category: 'shawarma',
     description: 'Marinated chicken with authentic garlic mayo sauce, wrapped in warm fresh bread.',
-    image: 'https://images.unsplash.com/photo-1648896172605-728b7e231165?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=800&q=80',
     images: [
-      'https://images.unsplash.com/photo-1648896172605-728b7e231165?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1561651823-34feb02250e4?auto=format&fit=crop&w=800&q=80',
     ],
     basePrice: 230,
@@ -457,7 +457,7 @@ export const MENU_PRODUCTS: Product[] = [
     image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1648896172605-728b7e231165?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=800&q=80',
     ],
     basePrice: 250,
     sizes: [],
@@ -500,7 +500,7 @@ export const MENU_PRODUCTS: Product[] = [
     image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80',
     ],
     basePrice: 200,
     sizes: [],
@@ -516,9 +516,9 @@ export const MENU_PRODUCTS: Product[] = [
     slug: 'large-fries',
     category: 'fries',
     description: 'Our crispy golden fries, supersized for big cravings.',
-    image: 'https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80',
     images: [
-      'https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80',
     ],
     basePrice: 300,
@@ -597,9 +597,9 @@ export const MENU_PRODUCTS: Product[] = [
     slug: 'creamy-pasta',
     category: 'pasta',
     description: 'Rich white sauce pasta tossed with tender chicken chunks, garlic, and fresh herbs.',
-    image: 'https://images.unsplash.com/photo-1621996346565-e3d5d6281699?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=800&q=80',
     images: [
-      'https://images.unsplash.com/photo-1621996346565-e3d5d6281699?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1608897013039-887f21d8c804?auto=format&fit=crop&w=800&q=80',
     ],
     basePrice: 800,
@@ -619,7 +619,7 @@ export const MENU_PRODUCTS: Product[] = [
     image: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1621996346565-e3d5d6281699?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=800&q=80',
     ],
     basePrice: 850,
     sizes: [],
