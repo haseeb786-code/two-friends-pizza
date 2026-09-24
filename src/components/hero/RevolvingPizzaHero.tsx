@@ -137,6 +137,49 @@ export function RevolvingPizzaHero() {
             {/* Glowing Crust Accent Rim */}
             <div className="absolute -inset-1 rounded-full border border-amber-400/30 pointer-events-none blur-[1px]" />
 
+            {/* ── Floating Visual Badges Alongside 3D Pizza ── */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
+              transition={{
+                opacity: { duration: 0.6 },
+                y: { duration: 4.2, repeat: Infinity, ease: 'easeInOut' },
+              }}
+              className="absolute -top-3 -right-2 sm:-right-8 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/90 backdrop-blur-md border border-amber-500/40 text-amber-300 text-[11px] sm:text-xs font-bold shadow-2xl pointer-events-none whitespace-nowrap"
+            >
+              <span className="text-amber-400">⚡</span>
+              <span>Hot & Fresh in 25m · Free &lt;5km</span>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1, y: [0, 8, 0] }}
+              transition={{
+                opacity: { duration: 0.6, delay: 0.2 },
+                y: { duration: 4.6, repeat: Infinity, ease: 'easeInOut', delay: 0.6 },
+              }}
+              className="absolute -bottom-3 -left-2 sm:-left-8 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/90 backdrop-blur-md border border-amber-500/40 text-amber-300 text-[11px] sm:text-xs font-bold shadow-2xl pointer-events-none whitespace-nowrap"
+            >
+              <span>🧀</span>
+              <span>100% Real Mozzarella</span>
+            </motion.div>
+
+            {/* Floating Herb Leaf Accent */}
+            <motion.div
+              animate={{
+                y: [-6, 8, -6],
+                rotate: [-8, 8, -8],
+              }}
+              transition={{
+                duration: 5.2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+              className="absolute top-1/3 -right-12 hidden lg:flex items-center justify-center text-2xl filter drop-shadow-xl pointer-events-none"
+            >
+              🌿
+            </motion.div>
+
             {/* ── Realistic Rising Oven Steam & Heat Shimmer (Rising Vertically in 3D) ── */}
             {!prefersReducedMotion && (
               <div

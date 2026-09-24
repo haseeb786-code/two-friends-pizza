@@ -25,13 +25,20 @@ export function StorySection() {
           <div className="lg:col-span-6 relative">
             <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
               <Image
-                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=85"
-                alt="Friends dining together at Two Friends Pizza Rawat"
+                src="/images/two-friends-restaurant.png"
+                alt="Two Friends Pizza Real Outlet on Main Chak Belli Road, Rawat"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
+                priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent" />
+
+              {/* Verified Real Outlet Badge */}
+              <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-amber-500/30 text-amber-300 text-[11px] font-semibold shadow-xl">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Our Real Outlet · Main Chak Belli Road, Rawat</span>
+              </div>
 
               {/* Floating Story Stat Card */}
               <div className="absolute bottom-6 left-6 right-6 p-4 sm:p-5 rounded-2xl bg-black/80 backdrop-blur-md border border-white/15">
