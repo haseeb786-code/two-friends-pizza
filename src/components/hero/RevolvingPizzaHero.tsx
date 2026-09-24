@@ -120,6 +120,32 @@ export function RevolvingPizzaHero() {
 
             {/* Outer Subtle Crust Glow Accent */}
             <div className="absolute -inset-1 rounded-full border border-amber-500/20 pointer-events-none blur-[1px]" />
+
+            {/* ── Realistic Rising Oven Steam & Heat Shimmer ── */}
+            {!prefersReducedMotion && (
+              <div className="absolute inset-0 pointer-events-none overflow-visible z-20" aria-hidden="true">
+                {/* Heat shimmer haze */}
+                <motion.div
+                  animate={{
+                    opacity: [0.15, 0.35, 0.15],
+                    scaleY: [1, 1.15, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                  className="absolute -top-16 inset-x-8 h-32 rounded-full bg-gradient-to-t from-amber-400/10 via-white/5 to-transparent blur-xl pointer-events-none mix-blend-screen"
+                />
+
+                {/* Staggered Rising Steam Plumes */}
+                <SteamWisp x="30%" y="25%" delay={0} scale={1} duration={4.8} drift={-14} />
+                <SteamWisp x="50%" y="20%" delay={1.2} scale={1.2} duration={5.2} drift={18} />
+                <SteamWisp x="40%" y="35%" delay={2.4} scale={0.9} duration={4.4} drift={-10} />
+                <SteamWisp x="65%" y="30%" delay={3.5} scale={1.1} duration={5.0} drift={12} />
+                <SteamWisp x="45%" y="40%" delay={0.6} scale={1.3} duration={5.5} drift={-16} />
+              </div>
+            )}
           </div>
 
           {/* ── Layer 4: Atmospheric Floating Embers / Seasoning Specks ── */}
@@ -184,6 +210,48 @@ function EmberParticle({
       }}
       style={{ left: `calc(50% + ${x})`, top: `calc(50% + ${y})`, width: size, height: size }}
       className="absolute rounded-full bg-amber-400/70 shadow-sm shadow-amber-400 pointer-events-none"
+    />
+  );
+}
+
+/** Realistic wafting oven steam plume */
+function SteamWisp({
+  x,
+  y,
+  delay,
+  scale = 1,
+  duration = 5,
+  drift = 0,
+}: {
+  x: string;
+  y: string;
+  delay: number;
+  scale?: number;
+  duration?: number;
+  drift?: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 0, scale: scale * 0.6, x: 0 }}
+      animate={{
+        opacity: [0, 0.4, 0.3, 0],
+        y: [0, -35, -95, -160],
+        x: [0, drift * 0.4, drift, drift * 1.3],
+        scale: [scale * 0.6, scale * 1.05, scale * 1.6, scale * 2.2],
+        rotate: [0, drift > 0 ? 12 : -12],
+      }}
+      transition={{
+        duration,
+        repeat: Infinity,
+        delay,
+        ease: 'easeOut',
+      }}
+      style={{
+        left: x,
+        top: y,
+        filter: 'blur(10px)',
+      }}
+      className="absolute w-16 h-24 rounded-[50%] bg-gradient-to-t from-white/25 via-amber-100/20 to-transparent pointer-events-none mix-blend-screen"
     />
   );
 }
