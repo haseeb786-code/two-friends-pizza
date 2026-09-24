@@ -1,17 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Crown, GraduationCap, PartyPopper } from 'lucide-react';
+import { Crown, GraduationCap, Users } from 'lucide-react';
 import { DealCard } from './DealCard';
 import { STUDENT_DEALS, OCCASION_DEALS, MEMBERS_DEALS } from '@/data/deals';
 import { staggerContainerVariants, productCardVariants } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 /**
- * Deals Section — three visually distinct sub-groups:
- *   1. Student Deals — accessible, everyday value
- *   2. Occasion / Group Deals — celebratory, large groups
- *   3. Members-Only Deals — "Already Discounted", gold visual treatment
+ * Deals Section — Three sub-groups with clean visual separation
+ * No decorative blur orbs or heavy gradients — static luxury.
  */
 export function DealsSection() {
   const prefersReducedMotion = useReducedMotion();
@@ -25,22 +23,22 @@ export function DealsSection() {
     : productCardVariants;
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-12 sm:space-y-14">
 
       {/* ── Student Deals ── */}
       <div>
         <DealGroupHeader
-          icon={<GraduationCap className="w-5 h-5" aria-hidden="true" />}
+          icon={<GraduationCap className="w-4 h-4" aria-hidden="true" />}
           label="Student Deals"
-          description="Everyday value designed for students. Quick, filling, affordable."
-          accentClass="text-flame-400"
+          description="Quick, filling, affordable."
+          accentClass="text-flame-500"
         />
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"
+          viewport={{ once: true, margin: '-40px' }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mt-4 sm:mt-5"
         >
           {STUDENT_DEALS.map((deal) => (
             <motion.div key={deal.id} variants={cardVariants}>
@@ -53,17 +51,17 @@ export function DealsSection() {
       {/* ── Occasion / Group Deals ── */}
       <div>
         <DealGroupHeader
-          icon={<PartyPopper className="w-5 h-5" aria-hidden="true" />}
+          icon={<Users className="w-4 h-4" aria-hidden="true" />}
           label="Occasion & Group Deals"
-          description="Celebrate big — birthday feasts, party spreads, and friend bundles."
-          accentClass="text-flame-400"
+          description="Birthday feasts, party spreads, and friend bundles."
+          accentClass="text-flame-500"
         />
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"
+          viewport={{ once: true, margin: '-40px' }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mt-4 sm:mt-5"
         >
           {OCCASION_DEALS.map((deal) => (
             <motion.div key={deal.id} variants={cardVariants}>
@@ -75,31 +73,26 @@ export function DealsSection() {
 
       {/* ── Members-Only Deals ── */}
       <div>
-        {/* Distinct visual treatment — gold banner header */}
-        <div className="relative rounded-2xl border border-amber-500/25 bg-gradient-to-br from-amber-950/20 to-transparent p-6 mb-6 overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-0 w-48 h-48 bg-amber-500/[0.05] rounded-full blur-3xl" />
+        {/* Clean header banner — no blur, no glow, just structure */}
+        <div className="flex items-center gap-3 px-4 py-3 sm:px-5 sm:py-4 rounded-xl border border-amber-600/15 bg-amber-500/[0.04] mb-4 sm:mb-5">
+          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+            <Crown className="w-4 h-4 text-amber-400" aria-hidden="true" />
           </div>
-          <div className="relative flex items-start gap-3">
-            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center">
-              <Crown className="w-5 h-5 text-amber-400" aria-hidden="true" />
-            </div>
-            <div>
-              <h3 className="font-heading text-lg font-bold text-amber-300">
-                Already Discounted — Members Only
-              </h3>
-              <p className="text-sm text-obsidian-400 mt-1">
-                These prices are already our lowest. No code needed — just show this to our team.
-              </p>
-            </div>
+          <div className="min-w-0">
+            <h3 className="font-heading text-[15px] sm:text-base font-bold text-amber-300 leading-tight">
+              Already Discounted — Members Only
+            </h3>
+            <p className="text-[11px] sm:text-xs text-obsidian-500 mt-0.5 leading-snug">
+              These prices are already our lowest. Show this to our team.
+            </p>
           </div>
         </div>
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          viewport={{ once: true, margin: '-40px' }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
         >
           {MEMBERS_DEALS.map((deal) => (
             <motion.div key={deal.id} variants={cardVariants}>
@@ -124,11 +117,11 @@ function DealGroupHeader({
   accentClass: string;
 }) {
   return (
-    <div className="flex items-start gap-3">
-      <div className={`flex-shrink-0 mt-0.5 ${accentClass}`}>{icon}</div>
+    <div className="flex items-center gap-2.5">
+      <div className={`flex-shrink-0 ${accentClass}`}>{icon}</div>
       <div>
-        <h3 className={`font-heading text-xl font-bold text-white`}>{label}</h3>
-        <p className="text-sm text-obsidian-400 mt-0.5">{description}</p>
+        <h3 className="font-heading text-base sm:text-lg font-bold text-white leading-tight">{label}</h3>
+        <p className="text-[11px] sm:text-xs text-obsidian-500 mt-0.5">{description}</p>
       </div>
     </div>
   );

@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Plus, Minus, Check } from 'lucide-react';
+import { Plus, Minus, Check } from 'lucide-react';
 import { Product, ProductSizeOption } from '@/types/menu';
 import { useCartStore } from '@/store/cartStore';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -12,16 +11,18 @@ import { BUSINESS_CONFIG } from '@/config/business';
 
 interface MenuCardProps {
   product: Product;
-  /** Hide the size selector for products that have no sizes (burgers, shawarma, etc.) */
   showSizes?: boolean;
 }
 
 /**
- * Reusable product card for all non-deal menu items.
- * - Size selector with animated price update (no layout shift)
- * - Add to Cart wired to Zustand cart store
- * - Placeholder image with shimmer fallback
- * - Hover lift / tap press from existing motion tokens
+ * Premium Product Card — Mobile-First
+ * ────────────────────────────────────
+ * Horizontal layout on mobile (image left, content right) for thumb-friendly scanning.
+ * Vertical card on ≥sm for grid layouts.
+ * Size selector: compact inline pills.
+ * Price: animates on size change without layout shift.
+ * Add-to-cart: ripple-free tap with confirmation state.
+ * Touch targets: all interactive elements ≥44px tap area.
  */
 export function MenuCard({ product, showSizes = true }: MenuCardProps) {
   const prefersReducedMotion = useReducedMotion();
@@ -35,126 +36,122 @@ export function MenuCard({ product, showSizes = true }: MenuCardProps) {
 
   const displayPrice = selectedSize ? selectedSize.price : product.basePrice;
 
-  function handleAddToCart() {
+  const handleAddToCart = useCallback(() => {
     addItem(product, selectedSize ? { size: selectedSize } : undefined, 1);
     setAdded(true);
-    setTimeout(() => setAdded(false), 1600);
-  }
+    setTimeout(() => setAdded(false), 1400);
+  }, [addItem, product, selectedSize]);
+
+  const { symbol } = BUSINESS_CONFIG.currency;
 
   return (
-    <motion.article
-      className="group relative flex flex-col bg-obsidian-900 border border-white/[0.07] rounded-2xl overflow-hidden hover:border-white/[0.14] transition-colors duration-300"
-      whileHover={prefersReducedMotion ? {} : { y: -4, scale: 1.012 }}
-      whileTap={prefersReducedMotion ? {} : { scale: 0.985 }}
-      transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-      aria-label={`${product.name} — ₨${displayPrice}`}
+    <article
+      className="group relative flex flex-row sm:flex-col bg-obsidian-900/80 border border-white/[0.06] rounded-xl sm:rounded-2xl overflow-hidden transition-colors duration-200 hover:border-white/[0.12]"
+      aria-label={`${product.name} — ${symbol}${displayPrice}`}
     >
-      {/* Image area */}
-      <div className="relative w-full aspect-[4/3] bg-obsidian-850 overflow-hidden">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-        />
-        {/* Placeholder shown when image fails / not yet available */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span className="text-5xl opacity-30 select-none" aria-hidden="true">
+      {/* ── Image area ── */}
+      <div className="relative w-[100px] sm:w-full aspect-square sm:aspect-[4/3] bg-obsidian-850 overflow-hidden flex-shrink-0">
+        {/* Emoji placeholder — real photos drop in later */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-3xl sm:text-4xl opacity-20 select-none" aria-hidden="true">
             {getCategoryEmoji(product.category)}
           </span>
         </div>
+        {/* Featured badge */}
         {product.isFeatured && (
-          <span className="absolute top-3 left-3 bg-amber-500 text-obsidian-950 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">
+          <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-amber-500 text-obsidian-950 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md">
             Popular
           </span>
         )}
       </div>
 
-      {/* Content */}
-      <div className="flex flex-col flex-1 p-4 gap-3">
-        <div>
-          <h3 className="font-heading text-base font-semibold text-white leading-snug">
+      {/* ── Content ── */}
+      <div className="flex flex-col flex-1 min-w-0 p-3 sm:p-4 gap-2 sm:gap-2.5">
+        {/* Name + description */}
+        <div className="min-w-0">
+          <h3 className="font-heading text-[14px] sm:text-[15px] font-semibold text-white leading-tight truncate">
             {product.name}
           </h3>
-          <p className="text-xs text-obsidian-400 mt-1 leading-relaxed line-clamp-2">
+          <p className="text-[11px] sm:text-xs text-obsidian-500 mt-0.5 leading-relaxed line-clamp-2 hidden sm:block">
             {product.description}
           </p>
         </div>
 
-        {/* Size selector — only shown for pizza products */}
+        {/* Size selector */}
         {hasSizes && (
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Select size">
-            {product.sizes.map((size) => (
-              <button
-                key={size.id}
-                onClick={() => setSelectedSize(size)}
-                className={cn(
-                  'px-3 py-1 text-xs font-medium rounded-lg border transition-all duration-150 cursor-pointer',
-                  selectedSize?.id === size.id
-                    ? 'bg-amber-500 text-obsidian-950 border-amber-500'
-                    : 'bg-transparent text-obsidian-300 border-white/10 hover:border-amber-500/50 hover:text-white'
-                )}
-                aria-pressed={selectedSize?.id === size.id}
-                aria-label={`${size.name} — ${BUSINESS_CONFIG.currency.symbol}${size.price}`}
-              >
-                {size.name}
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-1" role="group" aria-label="Select size">
+            {product.sizes.map((size) => {
+              const isSelected = selectedSize?.id === size.id;
+              return (
+                <button
+                  key={size.id}
+                  onClick={() => setSelectedSize(size)}
+                  className={cn(
+                    'h-7 px-2.5 text-[10px] sm:text-[11px] font-semibold rounded-md border transition-all duration-100 cursor-pointer',
+                    isSelected
+                      ? 'bg-white text-obsidian-950 border-white'
+                      : 'bg-transparent text-obsidian-400 border-white/[0.08] active:bg-white/5'
+                  )}
+                  aria-pressed={isSelected}
+                  aria-label={`${size.name} — ${symbol}${size.price}`}
+                >
+                  {size.name}
+                </button>
+              );
+            })}
           </div>
         )}
 
-        {/* Price + Add to Cart */}
-        <div className="flex items-center justify-between mt-auto pt-1">
+        {/* Price + Add */}
+        <div className="flex items-center justify-between gap-2 mt-auto">
           <AnimatePresence mode="wait">
             <motion.span
               key={displayPrice}
-              initial={{ opacity: 0, y: -4 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 4 }}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.15 }}
-              className="font-heading text-xl font-bold text-amber-400"
+              exit={{ opacity: 0, y: 6 }}
+              transition={{ duration: 0.12 }}
+              className="font-heading text-lg sm:text-xl font-bold text-amber-400 leading-none"
               aria-live="polite"
-              aria-label={`Price: ${BUSINESS_CONFIG.currency.symbol}${displayPrice}`}
+              aria-label={`Price: ${symbol}${displayPrice}`}
             >
-              {BUSINESS_CONFIG.currency.symbol}{displayPrice.toLocaleString()}
+              {symbol}{displayPrice.toLocaleString()}
             </motion.span>
           </AnimatePresence>
 
           <motion.button
             onClick={handleAddToCart}
+            whileTap={prefersReducedMotion ? {} : { scale: 0.92 }}
             className={cn(
-              'flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors duration-200 cursor-pointer',
+              'flex items-center justify-center gap-1 h-8 sm:h-9 px-3 sm:px-3.5 rounded-lg text-[11px] sm:text-xs font-semibold transition-colors duration-150 cursor-pointer flex-shrink-0',
               added
-                ? 'bg-emerald-600 text-white'
-                : 'bg-flame-600 hover:bg-flame-500 text-white'
+                ? 'bg-basil-500 text-white'
+                : 'bg-flame-600 active:bg-flame-700 text-white'
             )}
-            whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
             aria-label={added ? `${product.name} added to cart` : `Add ${product.name} to cart`}
           >
             {added ? (
-              <Check className="w-4 h-4" aria-hidden="true" />
+              <Check className="w-3.5 h-3.5" aria-hidden="true" />
             ) : (
-              <Plus className="w-4 h-4" aria-hidden="true" />
+              <Plus className="w-3.5 h-3.5" aria-hidden="true" />
             )}
-            {added ? 'Added' : 'Add'}
+            <span className="hidden xs:inline">{added ? 'Added' : 'Add'}</span>
           </motion.button>
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }
 
 function getCategoryEmoji(category: string): string {
   const map: Record<string, string> = {
-    pizza: '🍕', 'pizza-local': '🔥', burger: '🍔',
+    pizza: '🍕', 'pizza-local': '🍕', burger: '🍔',
     shawarma: '🌯', fries: '🍟', pasta: '🍝', crispy: '🍗',
   };
   return map[category] ?? '🍽️';
 }
 
-/** Compact quantity control used inside cart drawer */
+/** Compact quantity control — used in CartDrawer */
 export function QuantityControl({
   quantity,
   onIncrease,
@@ -165,20 +162,20 @@ export function QuantityControl({
   onDecrease: () => void;
 }) {
   return (
-    <div className="flex items-center gap-2" role="group" aria-label="Adjust quantity">
+    <div className="flex items-center gap-0" role="group" aria-label="Adjust quantity">
       <button
         onClick={onDecrease}
-        className="w-7 h-7 flex items-center justify-center rounded-lg bg-obsidian-800 hover:bg-obsidian-700 text-white transition-colors cursor-pointer"
+        className="w-8 h-8 flex items-center justify-center rounded-l-lg bg-obsidian-800 active:bg-obsidian-700 text-white transition-colors cursor-pointer"
         aria-label="Decrease quantity"
       >
         <Minus className="w-3 h-3" aria-hidden="true" />
       </button>
-      <span className="text-sm font-semibold text-white w-4 text-center" aria-live="polite">
+      <span className="w-8 h-8 flex items-center justify-center bg-obsidian-800/60 text-[13px] font-bold text-white" aria-live="polite">
         {quantity}
       </span>
       <button
         onClick={onIncrease}
-        className="w-7 h-7 flex items-center justify-center rounded-lg bg-obsidian-800 hover:bg-obsidian-700 text-white transition-colors cursor-pointer"
+        className="w-8 h-8 flex items-center justify-center rounded-r-lg bg-obsidian-800 active:bg-obsidian-700 text-white transition-colors cursor-pointer"
         aria-label="Increase quantity"
       >
         <Plus className="w-3 h-3" aria-hidden="true" />

@@ -7,7 +7,7 @@ import { QuantityControl } from '@/components/menu/MenuCard';
 import { cartDrawerVariants } from '@/lib/motion';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -15,42 +15,46 @@ interface CartDrawerProps {
 }
 
 /**
- * Slide-in Cart Drawer
- * - Full Zustand cart state integration
- * - Quantity controls: increase / decrease / remove
- * - Real price totals in PKR
- * - Traps focus when open (returns focus to trigger on close)
- * - Closes on Escape key
+ * Cart Drawer — Mobile-First
+ * ──────────────────────────
+ * Mobile: full-width slide-in from right.
+ * Desktop: capped at 400px max-width.
+ * Footer always visible with sticky total + CTA.
+ * Safe area padding for notched phones.
  */
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const prefersReducedMotion = useReducedMotion();
   const { items, increaseQuantity, decreaseQuantity, removeItem, getSubtotal, getTotal, deliveryFee, getItemCount } = useCartStore();
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   const subtotal = getSubtotal();
   const total = getTotal();
   const itemCount = getItemCount();
   const { symbol } = BUSINESS_CONFIG.currency;
 
-  // Close on Escape
+  // Escape to close
   useEffect(() => {
+    if (!isOpen) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape' && isOpen) onClose();
+      if (e.key === 'Escape') onClose();
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
 
-  // Prevent body scroll when drawer open
+  // Body scroll lock
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      // Focus the close button when drawer opens
+      setTimeout(() => closeRef.current?.focus(), 100);
     } else {
       document.body.style.overflow = '';
     }
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  const drawerVariants = prefersReducedMotion
+  const drawerV = prefersReducedMotion
     ? { closed: { opacity: 0 }, open: { opacity: 1 } }
     : cartDrawerVariants;
 
@@ -64,75 +68,78 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-black/70"
             onClick={onClose}
             aria-hidden="true"
           />
 
-          {/* Drawer Panel */}
+          {/* Drawer */}
           <motion.div
             key="cart-drawer"
             role="dialog"
             aria-modal="true"
             aria-label="Your cart"
-            variants={drawerVariants}
+            variants={drawerV}
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed right-0 top-0 h-full w-full max-w-[420px] z-50 flex flex-col bg-obsidian-850 border-l border-white/10 shadow-2xl"
+            className="fixed right-0 top-0 h-full w-full sm:max-w-[400px] z-50 flex flex-col bg-obsidian-950 border-l border-white/[0.06]"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.07]">
+            {/* ── Header ── */}
+            <div className="flex items-center justify-between px-4 sm:px-5 h-14 border-b border-white/[0.06] flex-shrink-0">
               <div className="flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5 text-flame-400" aria-hidden="true" />
-                <h2 className="font-heading text-lg font-bold text-white">Your Cart</h2>
+                <ShoppingBag className="w-4 h-4 text-obsidian-400" aria-hidden="true" />
+                <h2 className="text-[15px] font-bold text-white">Cart</h2>
                 {itemCount > 0 && (
-                  <span className="bg-flame-600 text-white text-xs font-bold px-2 py-0.5 rounded-full" aria-label={`${itemCount} items`}>
+                  <span className="bg-white/10 text-obsidian-300 text-[10px] font-bold px-1.5 py-0.5 rounded-md tabular-nums">
                     {itemCount}
                   </span>
                 )}
               </div>
               <button
+                ref={closeRef}
                 onClick={onClose}
-                className="w-9 h-9 flex items-center justify-center rounded-xl bg-obsidian-800 hover:bg-obsidian-700 text-obsidian-300 hover:text-white transition-colors cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.05] active:bg-white/[0.1] text-obsidian-400 transition-colors cursor-pointer"
                 aria-label="Close cart"
               >
                 <X className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
 
-            {/* Items list */}
-            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+            {/* ── Items ── */}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-3 space-y-2">
               {items.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-48 text-center gap-3">
-                  <ShoppingBag className="w-10 h-10 text-obsidian-600" aria-hidden="true" />
-                  <p className="text-obsidian-400 text-sm">Your cart is empty.</p>
-                  <p className="text-obsidian-600 text-xs">Add items from the menu below.</p>
+                <div className="flex flex-col items-center justify-center h-40 text-center gap-2">
+                  <ShoppingBag className="w-8 h-8 text-obsidian-800" aria-hidden="true" />
+                  <p className="text-obsidian-500 text-[13px]">Your cart is empty</p>
+                  <p className="text-obsidian-700 text-[11px]">Add items from the menu</p>
                 </div>
               ) : (
                 items.map((item) => (
                   <article
                     key={item.id}
-                    className="flex items-start gap-4 p-4 rounded-xl bg-obsidian-900 border border-white/[0.07]"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.04]"
                     aria-label={item.product.name}
                   >
+                    {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">{item.product.name}</p>
+                      <p className="text-[13px] font-semibold text-white truncate">{item.product.name}</p>
                       {item.selectedSize && (
-                        <p className="text-xs text-obsidian-400 mt-0.5">{item.selectedSize.name}</p>
+                        <p className="text-[11px] text-obsidian-500 mt-px">{item.selectedSize.name}</p>
                       )}
-                      <p className="text-sm font-bold text-amber-400 mt-1">
+                      <p className="text-[13px] font-bold text-amber-400 mt-1 tabular-nums">
                         {symbol}{item.itemTotal.toLocaleString()}
                       </p>
                     </div>
-                    <div className="flex flex-col items-end gap-2">
+                    {/* Controls */}
+                    <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="text-obsidian-500 hover:text-flame-400 transition-colors cursor-pointer"
-                        aria-label={`Remove ${item.product.name} from cart`}
+                        className="w-7 h-7 flex items-center justify-center rounded-md text-obsidian-600 active:text-flame-400 transition-colors cursor-pointer"
+                        aria-label={`Remove ${item.product.name}`}
                       >
-                        <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                        <Trash2 className="w-3 h-3" aria-hidden="true" />
                       </button>
                       <QuantityControl
                         quantity={item.quantity}
@@ -145,33 +152,29 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               )}
             </div>
 
-            {/* Footer totals + CTA */}
+            {/* ── Footer ── */}
             {items.length > 0 && (
-              <div className="px-6 py-5 border-t border-white/[0.07] space-y-3">
-                <div className="flex justify-between text-sm text-obsidian-300">
+              <div className="px-4 sm:px-5 py-4 border-t border-white/[0.06] space-y-2 flex-shrink-0 pb-[calc(1rem+var(--safe-bottom))]">
+                <div className="flex justify-between text-[13px] text-obsidian-400">
                   <span>Subtotal</span>
-                  <span>{symbol}{subtotal.toLocaleString()}</span>
+                  <span className="tabular-nums">{symbol}{subtotal.toLocaleString()}</span>
                 </div>
                 {deliveryFee > 0 && (
-                  <div className="flex justify-between text-sm text-obsidian-300">
+                  <div className="flex justify-between text-[13px] text-obsidian-400">
                     <span>Delivery</span>
-                    <span>{symbol}{deliveryFee.toLocaleString()}</span>
+                    <span className="tabular-nums">{symbol}{deliveryFee.toLocaleString()}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-base font-bold text-white pt-2 border-t border-white/[0.07]">
+                <div className="flex justify-between text-[15px] font-bold text-white pt-2 border-t border-white/[0.06]">
                   <span>Total</span>
-                  <span className="text-amber-400">{symbol}{total.toLocaleString()}</span>
+                  <span className="text-amber-400 tabular-nums">{symbol}{total.toLocaleString()}</span>
                 </div>
                 <button
-                  className="w-full bg-flame-600 hover:bg-flame-500 text-white font-semibold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer mt-2"
+                  className="w-full bg-flame-600 active:bg-flame-700 text-white font-semibold h-12 rounded-xl transition-colors duration-150 cursor-pointer mt-1 text-[14px]"
                   aria-label={`Proceed to checkout — Total: ${symbol}${total.toLocaleString()}`}
-                  onClick={() => {/* Checkout phase — not implemented yet */}}
                 >
                   Proceed to Order
                 </button>
-                <p className="text-center text-xs text-obsidian-500">
-                  WhatsApp order flow in next phase
-                </p>
               </div>
             )}
           </motion.div>

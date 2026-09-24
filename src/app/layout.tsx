@@ -53,7 +53,7 @@ export default function RootLayout({
           <div
             id="main-content"
             tabIndex={-1}
-            className="outline-none min-h-screen pt-[4.5rem]"
+            className="outline-none min-h-dvh pt-14 sm:pt-16"
           >
             {children}
           </div>
