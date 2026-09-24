@@ -3,15 +3,19 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Flame, Check, ArrowRight } from 'lucide-react';
+import { Crown, Sparkles, Check, ShoppingBag, ArrowRight } from 'lucide-react';
+import { MENU_PRODUCTS } from '@/data/menu';
+import { useCartStore } from '@/store/cartStore';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
-interface StoryStage {
+interface HouseSpecial {
   id: string;
+  productId: string;
   step: string;
   badge: string;
+  category: string;
   title: string;
-  subtitle: string;
+  priceDisplay: string;
   description: string;
   imageUrl: string;
   imageAlt: string;
@@ -23,82 +27,99 @@ interface StoryStage {
   }[];
 }
 
-const STORY_STAGES: StoryStage[] = [
+const HOUSE_SPECIALS: HouseSpecial[] = [
   {
-    id: 'cheese-pull',
-    step: '01 / The Melt',
-    badge: 'Golden Mozzarella',
-    title: 'The Legendary Cheese Pull',
-    subtitle: '100% pure mozzarella loaded to the crust edge',
+    id: 'crown-crust',
+    productId: 'pizza-crown-crust',
+    step: '01 / Signature Pizza',
+    badge: 'Crown Crust',
+    category: 'Signature Pizzas',
+    title: 'Crown Crust Pizza',
+    priceDisplay: 'Reg ₨700 · Med ₨1,150 · Large ₨1,700 · XL ₨1,950',
     description:
-      'Every Two Friends pizza is blanketed with premium stringy mozzarella that melts into an irresistible, piping-hot cheese pull with every slice you take.',
+      'A royal crown of crust stuffed with rich melted cheese pockets wrapped around premium chicken chunks and fresh toppings. Our #1 best-selling pizza in Rawat.',
     imageUrl:
-      'https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=1200&q=85',
-    imageAlt: 'Irresistible stretchy mozzarella cheese pull on hot pizza slice',
+      'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=85',
+    imageAlt: 'Two Friends Crown Crust Pizza with stuffed cheese pockets',
     highlights: [
-      'Pure stretchy mozzarella — no synthetic blends',
-      'Loaded Crown Crust option with cheese-stuffed pockets',
-      'Baked piping hot to 400°C for golden bubbly blisters',
+      'Royal crown crust with cheese-stuffed pockets around the rim',
+      'Loaded with marinated tender chicken boti, capsicum & onions',
+      '100% real stretchy mozzarella baked to golden blistered perfection',
     ],
     floatingIngredients: [
-      { name: 'Fresh Mozzarella', icon: '🧀', position: 'top-6 left-6' },
-      { name: 'Oregano Dust', icon: '🌿', position: 'bottom-10 right-8' },
-      { name: 'Crushed Red Pepper', icon: '🌶️', position: 'top-12 right-6' },
+      { name: 'Stuffed Cheese Pockets', icon: '🧀', position: 'top-6 left-6' },
+      { name: 'Tender Chicken Tikka', icon: '🍗', position: 'bottom-8 right-6' },
+      { name: 'Sliced Black Olives', icon: '🫒', position: 'top-10 right-6' },
     ],
   },
   {
-    id: 'fresh-toppings',
-    step: '02 / Sourced Fresh',
-    badge: 'Real Fast-Food Craft',
-    title: 'Explosive Fresh Ingredients',
-    subtitle: 'Marinated chicken tikka, crisp vegetables & house sauce',
+    id: 'pizza-burger',
+    productId: 'burger-pizza',
+    step: '02 / Burger Station',
+    badge: 'Pizza Burger',
+    category: 'Burger Station',
+    title: 'Special Pizza Burger',
+    priceDisplay: '₨800',
     description:
-      'We never use frozen pre-packaged toppings. Chicken is marinated daily in our signature spicy tikka and fajita spice blends, paired with hand-cut bell peppers and black olives.',
+      'Two fast-food worlds merged into one. Savory pizza sauce, seasoned chicken, and bubbling mozzarella cheese baked inside a warm toasted burger bun.',
     imageUrl:
-      'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1200&q=85',
-    imageAlt: 'Freshly diced chicken, bell peppers, tomatoes and olives on artisan pizza dough',
+      'https://images.unsplash.com/photo-1520072959219-c595dc870360?auto=format&fit=crop&w=1200&q=85',
+    imageAlt: 'Two Friends Special Pizza Burger overflowing with melted cheese',
     highlights: [
-      'Locally marinated tender chicken tikka & malai chunks',
-      'Fresh crisp green bell peppers, mushrooms & black olives',
-      'Slow-simmered garlic herb tomato sauce base',
+      'Seasoned chicken patty drenched in aromatic garlic pizza sauce',
+      'Core of molten, stretchy mozzarella cheese sealed in every bite',
+      'Toasted golden bun with sesame seeds and crisp lettuce',
     ],
     floatingIngredients: [
-      { name: 'Marinated Tikka Boti', icon: '🍗', position: 'top-8 left-8' },
-      { name: 'Garden Bell Peppers', icon: '🫑', position: 'bottom-8 left-10' },
-      { name: 'Sliced Black Olives', icon: '🫒', position: 'top-8 right-8' },
-      { name: 'Spicy Jalapeños', icon: '🌶️', position: 'bottom-12 right-8' },
+      { name: 'Melted Mozzarella Core', icon: '🧀', position: 'top-8 left-8' },
+      { name: 'Rich Pizza Herb Sauce', icon: '🍅', position: 'bottom-8 left-10' },
+      { name: 'Toasted Sesame Bun', icon: '🍔', position: 'top-8 right-8' },
     ],
   },
   {
-    id: 'golden-crust',
-    step: '03 / Hand-Kneaded',
-    badge: 'Crispy & Fluffy',
-    title: 'The Stone-Oven Golden Crust',
-    subtitle: 'Kneaded fresh every morning in Rawat',
+    id: 'pizza-fries',
+    productId: 'fries-pizza',
+    step: '03 / Fries Station',
+    badge: 'Pizza Fries',
+    category: 'Fries Station',
+    title: 'Oven-Baked Pizza Fries',
+    priceDisplay: '₨700',
     description:
-      'The foundation of every great pizza is the dough. We knead our dough in small batches daily, letting it ferment naturally to achieve that signature light, airy center and crunchy golden rim.',
+      'Golden crispy French fries baked under savory pizza sauce, spiced chicken chunks, and a thick blanket of melted mozzarella cheese.',
     imageUrl:
-      'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1200&q=85',
-    imageAlt: 'Freshly baked pizza crust straight from the blazing oven',
+      'https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=1200&q=85',
+    imageAlt: 'Two Friends Loaded Oven-Baked Pizza Fries',
     highlights: [
-      'Daily freshly kneaded dough — never frozen discs',
-      'Choice of Pan, Crown Crust, and Kabab Crust styles',
-      'Golden olive oil brushed rim with sesame sprinkles',
+      'Crisp golden hand-cut fries smothered in signature pizza sauce',
+      'Generously topped with spiced chicken cubes and black olives',
+      'Oven-broiled until the mozzarella cheese forms a stretchy blanket',
     ],
     floatingIngredients: [
-      { name: 'Fresh Daily Dough', icon: '🥖', position: 'top-6 left-6' },
-      { name: '400°C High Heat', icon: '🔥', position: 'bottom-8 left-10' },
-      { name: 'Extra Virgin Glaze', icon: '🫒', position: 'top-10 right-6' },
+      { name: 'Golden Crispy Fries', icon: '🍟', position: 'top-6 left-6' },
+      { name: 'Baked Mozzarella Blanket', icon: '🧀', position: 'bottom-8 left-10' },
+      { name: 'Oregano & Chili Flakes', icon: '🌿', position: 'top-10 right-6' },
     ],
   },
 ];
 
 export function ScrollytellingShowcase() {
   const prefersReducedMotion = useReducedMotion();
-  const [activeStageIndex, setActiveStageIndex] = useState(0);
-  const activeStage = STORY_STAGES[activeStageIndex];
+  const [activeSpecialIndex, setActiveSpecialIndex] = useState(0);
+  const [addedItem, setAddedItem] = useState<string | null>(null);
+  const { addItem } = useCartStore();
 
-  const handleOrderScroll = () => {
+  const activeSpecial = HOUSE_SPECIALS[activeSpecialIndex];
+  const matchedProduct = MENU_PRODUCTS.find((p) => p.id === activeSpecial.productId);
+
+  const handleAddToCart = () => {
+    if (!matchedProduct) return;
+    const defaultSize = matchedProduct.sizes.length > 0 ? matchedProduct.sizes[0] : undefined;
+    addItem(matchedProduct, { size: defaultSize }, 1);
+    setAddedItem(matchedProduct.id);
+    setTimeout(() => setAddedItem(null), 2200);
+  };
+
+  const handleScrollToMenu = () => {
     const el = document.getElementById('menu');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
@@ -107,59 +128,59 @@ export function ScrollytellingShowcase() {
 
   return (
     <section
-      className="relative py-16 sm:py-24 bg-canvas overflow-hidden border-b border-white/[0.06]"
-      aria-label="Two Friends Pizza Craft Showcase"
-      id="experience"
+      className="relative py-14 sm:py-20 bg-canvas overflow-hidden border-b border-white/[0.06]"
+      aria-label="Two Friends Pizza Top House Specials"
+      id="specials"
     >
       {/* Background Ambience */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-gradient-radial from-amber-600/10 via-flame-900/5 to-transparent blur-3xl pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+        {/* Section Header — Grounded 100% in Real Menu Data */}
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold mb-3">
-            <Flame className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
-            <span>The $10K Sensory Experience</span>
+            <Crown className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
+            <span>Rawat's Top 3 House Specials</span>
           </div>
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
-            Anatomy of the <span className="text-amber-400">Perfect Slice</span>
+            Our Most Craved <span className="text-amber-400">Creations</span>
           </h2>
-          <p className="text-obsidian-300 text-sm sm:text-base mt-3 max-w-xl mx-auto leading-relaxed">
-            See what makes Two Friends Pizza the most crave-worthy slice in Rawat. Real cheese, fresh daily dough, and unapologetic portions.
+          <p className="text-obsidian-300 text-sm sm:text-base mt-2 max-w-xl mx-auto leading-relaxed">
+            Directly from our kitchen on Main Chak Belli Road — our three most loved dishes with genuine prices and real ingredients.
           </p>
         </div>
 
-        {/* Stage Selector Navigation Tabs */}
-        <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10 overflow-x-auto pb-2 scrollbar-none">
-          {STORY_STAGES.map((stage, idx) => {
-            const isActive = idx === activeStageIndex;
+        {/* Real Item Selector Navigation Tabs */}
+        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-8 overflow-x-auto pb-2 scrollbar-none">
+          {HOUSE_SPECIALS.map((special, idx) => {
+            const isActive = idx === activeSpecialIndex;
             return (
               <button
-                key={stage.id}
-                onClick={() => setActiveStageIndex(idx)}
-                className={`flex items-center gap-2.5 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
+                key={special.id}
+                onClick={() => setActiveSpecialIndex(idx)}
+                className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
                   isActive
                     ? 'bg-amber-500 text-obsidian-950 shadow-lg shadow-amber-500/25 scale-105'
                     : 'bg-white/[0.04] text-obsidian-300 hover:text-white hover:bg-white/[0.08] border border-white/[0.06]'
                 }`}
                 aria-pressed={isActive}
               >
-                <span>{stage.step.split(' / ')[0]}</span>
+                <span>0{idx + 1}</span>
                 <span>·</span>
-                <span>{stage.badge}</span>
+                <span>{special.badge}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Dynamic Interactive Stage Card */}
+        {/* Dynamic Interactive Real Item Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-obsidian-950/70 border border-white/[0.08] rounded-3xl p-6 sm:p-10 backdrop-blur-xl shadow-2xl">
-          {/* Left Column: Visual with Floating Ingredient Badges */}
+          {/* Left Column: Authentic Food Photography with Floating Ingredient Badges */}
           <div className="lg:col-span-7 relative">
             <div className="relative aspect-[4/3] sm:aspect-[16/10] w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={activeStage.id}
+                  key={activeSpecial.id}
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 1.04 }}
@@ -167,17 +188,17 @@ export function ScrollytellingShowcase() {
                   className="relative w-full h-full"
                 >
                   <Image
-                    src={activeStage.imageUrl}
-                    alt={activeStage.imageAlt}
+                    src={activeSpecial.imageUrl}
+                    alt={activeSpecial.imageAlt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 60vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     priority
                   />
-                  {/* Cinematic gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                  {/* Subtle vignette */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
 
-                  {/* Hot Steam Wisp Animation above image */}
+                  {/* Hot Steam Wisp Animation */}
                   {!prefersReducedMotion && (
                     <motion.div
                       animate={{
@@ -193,9 +214,9 @@ export function ScrollytellingShowcase() {
                     />
                   )}
 
-                  {/* Floating Ingredients Badges (Exploding Ingredients Effect from Video 2) */}
+                  {/* Floating Ingredients Badges matching the real item */}
                   {!prefersReducedMotion &&
-                    activeStage.floatingIngredients.map((item, i) => (
+                    activeSpecial.floatingIngredients.map((item, i) => (
                       <motion.div
                         key={item.name}
                         initial={{ opacity: 0, y: 15 }}
@@ -212,47 +233,54 @@ export function ScrollytellingShowcase() {
                             delay: i * 0.4,
                           },
                         }}
-                        className={`absolute ${item.position} z-20 flex items-center gap-2 bg-black/75 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full text-xs font-medium text-white shadow-xl pointer-events-none`}
+                        className={`absolute ${item.position} z-20 flex items-center gap-2 bg-black/80 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full text-xs font-medium text-white shadow-xl pointer-events-none`}
                       >
                         <span className="text-sm">{item.icon}</span>
                         <span>{item.name}</span>
                       </motion.div>
                     ))}
+
+                  {/* Bottom Category Tag */}
+                  <div className="absolute bottom-4 left-4 z-20 px-3 py-1 rounded-lg bg-black/70 backdrop-blur-md border border-white/10 text-[11px] text-amber-300 font-semibold">
+                    Menu Category: {activeSpecial.category}
+                  </div>
                 </motion.div>
               </AnimatePresence>
             </div>
           </div>
 
-          {/* Right Column: Stage Description & Highlights */}
+          {/* Right Column: Real Menu Item Description, Price & Actions */}
           <div className="lg:col-span-5 flex flex-col justify-center">
             <AnimatePresence mode="wait">
               <motion.div
-                key={activeStage.id}
+                key={activeSpecial.id}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4, ease: 'easeOut' }}
-                className="space-y-5"
+                className="space-y-4"
               >
                 <div>
                   <span className="text-xs uppercase font-bold tracking-widest text-amber-400">
-                    {activeStage.step}
+                    {activeSpecial.step}
                   </span>
                   <h3 className="font-heading text-2xl sm:text-3xl font-bold text-white mt-1 leading-snug">
-                    {activeStage.title}
+                    {activeSpecial.title}
                   </h3>
-                  <p className="text-xs sm:text-sm font-medium text-amber-200/90 mt-1">
-                    {activeStage.subtitle}
-                  </p>
+
+                  {/* Real Verified Price Badge */}
+                  <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-bold">
+                    <span>✦ Price: {activeSpecial.priceDisplay}</span>
+                  </div>
                 </div>
 
                 <p className="text-obsidian-300 text-sm leading-relaxed">
-                  {activeStage.description}
+                  {activeSpecial.description}
                 </p>
 
-                {/* Highlights List */}
-                <div className="space-y-2.5 pt-2">
-                  {activeStage.highlights.map((highlight) => (
+                {/* Real Ingredients & Highlights */}
+                <div className="space-y-2 pt-1">
+                  {activeSpecial.highlights.map((highlight) => (
                     <div key={highlight} className="flex items-start gap-2.5">
                       <div className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
                         <Check className="w-3 h-3" />
@@ -264,14 +292,24 @@ export function ScrollytellingShowcase() {
                   ))}
                 </div>
 
-                {/* CTA Action */}
-                <div className="pt-4 flex items-center gap-3">
+                {/* Direct Action Buttons */}
+                <div className="pt-4 flex flex-wrap items-center gap-3">
                   <button
-                    onClick={handleOrderScroll}
-                    className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-flame-500 hover:from-amber-400 hover:to-flame-400 text-obsidian-950 font-bold px-5 py-2.5 rounded-xl text-sm transition-all duration-200 shadow-lg shadow-amber-500/20"
+                    onClick={handleAddToCart}
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-flame-500 hover:from-amber-400 hover:to-flame-400 text-obsidian-950 font-bold px-5 py-2.5 rounded-xl text-sm transition-all duration-200 shadow-lg shadow-amber-500/20 active:scale-95"
                   >
-                    <span>Taste This In Our Pizzas</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ShoppingBag className="w-4 h-4" />
+                    <span>
+                      {addedItem === activeSpecial.productId ? 'Added to Cart ✓' : 'Add to Cart'}
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={handleScrollToMenu}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/10 hover:border-white/20 text-obsidian-300 hover:text-white text-xs sm:text-sm font-medium transition-colors"
+                  >
+                    <span>View in Menu</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </motion.div>

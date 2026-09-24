@@ -36,6 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`dark ${playfairDisplay.variable} ${plusJakartaSans.variable}`}
     >
       <head>
@@ -47,7 +48,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantJsonLd) }}
         />
       </head>
-      <body className="antialiased font-sans bg-canvas text-white selection:bg-amber-500/30 selection:text-amber-200">
+      <body
+        suppressHydrationWarning
+        className="antialiased font-sans bg-canvas text-white selection:bg-amber-500/30 selection:text-amber-200"
+      >
         <SiteBackground />
         <SkipToContent targetId="main-content" />
         <SiteHeader />

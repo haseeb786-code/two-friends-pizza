@@ -1,30 +1,31 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 /**
- * Premium Revolving Pizza Hero Presentation
+ * Authentic 3D Tilted Revolving Pizza Hero
  * ──────────────────────────────────────────
- * - Realistic high-resolution culinary pizza presentation.
- * - Suspended/floating in space with continuous, slow cinematic turntable rotation.
- * - Deep 3D perspective with realistic ground shadow and ember backlight.
- * - Smooth physics-based cursor parallax on desktop.
- * - Optimized for 60fps on mobile without WebGL battery drain or GPU overhead.
+ * - True 3D perspective pitch (~48° tilt) so toppings and thick crust are visible in 3D depth.
+ * - Multi-axis floating wobble (rotateX, rotateY, rotateZ, and y-axis float) — NOT a flat clock spin.
+ * - Continuous turntable rotation on the tilted 3D plane.
+ * - Interactive cursor-driven 3D parallax on desktop.
+ * - Realistic wafting steam plumes and heat shimmer rising from the hot crust.
+ * - 60fps GPU transform-accelerated.
  */
 export function RevolvingPizzaHero() {
   const prefersReducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Mouse parallax springs (damped, subtle)
+  // Mouse parallax springs (subtle 3D angle influence)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springConfig = { damping: 30, stiffness: 100 };
-  const rotateXSpring = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), springConfig);
-  const rotateYSpring = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), springConfig);
+  const springConfig = { damping: 25, stiffness: 90 };
+  const mouseTiltX = useSpring(useTransform(mouseY, [-0.5, 0.5], [12, -12]), springConfig);
+  const mouseTiltY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-14, 14]), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (prefersReducedMotion || !containerRef.current) return;
@@ -45,40 +46,54 @@ export function RevolvingPizzaHero() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full h-full flex items-center justify-center select-none"
+      className="relative w-full h-full flex items-center justify-center select-none py-6"
       style={{ perspective: 1200 }}
     >
-      {/* ── Layer 1: Ambient Oven Glow / Warm Backlight ── */}
+      {/* ── Layer 1: Ambient Oven Hearth Glow / Warm Backlight ── */}
       <div
-        className="absolute w-[300px] sm:w-[420px] lg:w-[520px] h-[300px] sm:h-[420px] lg:h-[520px] rounded-full bg-gradient-radial from-amber-500/15 via-flame-600/08 to-transparent blur-3xl pointer-events-none"
+        className="absolute w-[320px] sm:w-[440px] lg:w-[560px] h-[320px] sm:h-[440px] lg:h-[560px] rounded-full bg-gradient-radial from-amber-500/20 via-flame-600/10 to-transparent blur-3xl pointer-events-none"
         aria-hidden="true"
       />
 
-      {/* ── Layer 2: Floating 3D Stage ── */}
+      {/* ── Layer 2: 3D Tilting Stage with Interactive Cursor Parallax ── */}
       <motion.div
-        style={prefersReducedMotion ? {} : { rotateX: rotateXSpring, rotateY: rotateYSpring }}
+        style={
+          prefersReducedMotion
+            ? { transformStyle: 'preserve-3d' }
+            : {
+                rotateX: mouseTiltX,
+                rotateY: mouseTiltY,
+                transformStyle: 'preserve-3d',
+              }
+        }
         className="relative flex items-center justify-center"
       >
-        {/* Floating Vertical Bobbing Wrapper */}
+        {/* ── Layer 3: Multi-Axis Floating & Tilting Wobble (True 3D Float) ── */}
         <motion.div
           animate={
             prefersReducedMotion
               ? {}
               : {
-                  y: [-10, 10, -10],
+                  y: [-14, 14, -14],
+                  rotateX: [46, 52, 46],
+                  rotateZ: [-12, -4, -12],
+                  rotateY: [-6, 6, -6],
                 }
           }
           transition={{
-            duration: 6,
+            duration: 7,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
+          style={{ transformStyle: 'preserve-3d' }}
           className="relative flex items-center justify-center"
         >
-          {/* ── Layer 3: Realistic Pizza Platter / Crust Shadow ── */}
-          <div className="relative w-[240px] h-[240px] xs:w-[280px] xs:h-[280px] sm:w-[360px] sm:h-[360px] lg:w-[460px] lg:h-[460px] xl:w-[500px] xl:h-[500px]">
-
-            {/* Slow Cinematic Continuous Turntable Rotation */}
+          {/* ── Layer 4: 3D Turntable Platter ── */}
+          <div
+            className="relative w-[240px] h-[240px] xs:w-[280px] xs:h-[280px] sm:w-[360px] sm:h-[360px] lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px]"
+            style={{ transformStyle: 'preserve-3d' }}
+          >
+            {/* Turntable Revolution on the 3D Tilted Plane */}
             <motion.div
               animate={
                 prefersReducedMotion
@@ -88,67 +103,71 @@ export function RevolvingPizzaHero() {
                     }
               }
               transition={{
-                duration: 48, // 48 seconds for a majestic, unhurried full revolution
+                duration: 42,
                 repeat: Infinity,
                 ease: 'linear',
               }}
               className="relative w-full h-full rounded-full overflow-hidden shadow-2xl"
               style={{
                 boxShadow:
-                  '0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 35px rgba(245, 158, 11, 0.15)',
+                  '0 35px 70px -15px rgba(0, 0, 0, 0.98), 0 0 40px rgba(245, 158, 11, 0.2)',
+                transformStyle: 'preserve-3d',
               }}
             >
-              {/* Realistic High-Resolution Pizza Presentation */}
+              {/* Authentic High-Resolution Real Pizza with Thick Golden Crust & Real Toppings */}
               <Image
-                src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=90"
-                alt="Two Friends Pizza Signature Pizza"
+                src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1200&q=90"
+                alt="Two Friends Pizza Signature Hand-Crafted Pizza"
                 fill
                 priority
-                sizes="(max-width: 640px) 280px, (max-width: 1024px) 380px, 500px"
+                sizes="(max-width: 640px) 280px, (max-width: 1024px) 380px, 480px"
                 className="object-cover rounded-full pointer-events-none scale-105"
               />
 
-              {/* Dimensional Crust Rim Shading */}
-              <div className="absolute inset-0 rounded-full border-[3px] sm:border-[4px] border-amber-600/30 pointer-events-none" />
+              {/* Dimensional Crust Rim with Golden Shading */}
+              <div className="absolute inset-0 rounded-full border-[4px] sm:border-[6px] border-amber-600/40 pointer-events-none" />
 
-              {/* Subtle Gourmet Glaze Overlay */}
+              {/* High-Gloss Gourmet Olive Oil Glaze */}
               <div
-                className="absolute inset-0 rounded-full bg-gradient-to-tr from-black/40 via-transparent to-amber-400/10 pointer-events-none mix-blend-overlay"
+                className="absolute inset-0 rounded-full bg-gradient-to-tr from-black/45 via-transparent to-amber-300/15 pointer-events-none mix-blend-overlay"
                 aria-hidden="true"
               />
             </motion.div>
 
-            {/* Outer Subtle Crust Glow Accent */}
-            <div className="absolute -inset-1 rounded-full border border-amber-500/20 pointer-events-none blur-[1px]" />
+            {/* Glowing Crust Accent Rim */}
+            <div className="absolute -inset-1 rounded-full border border-amber-400/30 pointer-events-none blur-[1px]" />
 
-            {/* ── Realistic Rising Oven Steam & Heat Shimmer ── */}
+            {/* ── Realistic Rising Oven Steam & Heat Shimmer (Rising Vertically in 3D) ── */}
             {!prefersReducedMotion && (
-              <div className="absolute inset-0 pointer-events-none overflow-visible z-20" aria-hidden="true">
+              <div
+                className="absolute inset-0 pointer-events-none overflow-visible z-20"
+                aria-hidden="true"
+              >
                 {/* Heat shimmer haze */}
                 <motion.div
                   animate={{
                     opacity: [0.15, 0.35, 0.15],
-                    scaleY: [1, 1.15, 1],
+                    scaleY: [1, 1.2, 1],
                   }}
                   transition={{
                     duration: 3,
                     repeat: Infinity,
                     ease: 'easeInOut',
                   }}
-                  className="absolute -top-16 inset-x-8 h-32 rounded-full bg-gradient-to-t from-amber-400/10 via-white/5 to-transparent blur-xl pointer-events-none mix-blend-screen"
+                  className="absolute -top-20 inset-x-6 h-36 rounded-full bg-gradient-to-t from-amber-400/15 via-white/8 to-transparent blur-xl pointer-events-none mix-blend-screen"
                 />
 
                 {/* Staggered Rising Steam Plumes */}
-                <SteamWisp x="30%" y="25%" delay={0} scale={1} duration={4.8} drift={-14} />
-                <SteamWisp x="50%" y="20%" delay={1.2} scale={1.2} duration={5.2} drift={18} />
-                <SteamWisp x="40%" y="35%" delay={2.4} scale={0.9} duration={4.4} drift={-10} />
-                <SteamWisp x="65%" y="30%" delay={3.5} scale={1.1} duration={5.0} drift={12} />
-                <SteamWisp x="45%" y="40%" delay={0.6} scale={1.3} duration={5.5} drift={-16} />
+                <SteamWisp x="30%" y="20%" delay={0} scale={1.1} duration={4.6} drift={-12} />
+                <SteamWisp x="50%" y="15%" delay={1.1} scale={1.3} duration={5.0} drift={16} />
+                <SteamWisp x="40%" y="30%" delay={2.2} scale={0.95} duration={4.2} drift={-8} />
+                <SteamWisp x="65%" y="25%" delay={3.3} scale={1.2} duration={4.8} drift={14} />
+                <SteamWisp x="45%" y="35%" delay={0.7} scale={1.4} duration={5.2} drift={-15} />
               </div>
             )}
           </div>
 
-          {/* ── Layer 4: Atmospheric Floating Embers / Seasoning Specks ── */}
+          {/* ── Atmospheric Floating Embers / Seasoning Specks ── */}
           {!prefersReducedMotion && (
             <div className="absolute inset-0 pointer-events-none overflow-visible">
               <EmberParticle x="-25%" y="-15%" delay={0} size={3} />
@@ -160,22 +179,25 @@ export function RevolvingPizzaHero() {
           )}
         </motion.div>
 
-        {/* ── Layer 5: Dynamic Ground Shadow (Breathes with floating motion) ── */}
+        {/* ── Layer 5: True 3D Ground Floor Shadow (Flat on Floor Plane) ── */}
         <motion.div
           animate={
             prefersReducedMotion
               ? {}
               : {
-                  scale: [0.92, 1.05, 0.92],
-                  opacity: [0.45, 0.75, 0.45],
+                  scale: [0.88, 1.08, 0.88],
+                  opacity: [0.5, 0.85, 0.5],
                 }
           }
           transition={{
-            duration: 6,
+            duration: 7,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute -bottom-10 sm:-bottom-14 w-[180px] xs:w-[220px] sm:w-[300px] lg:w-[380px] h-[36px] sm:h-[48px] rounded-full bg-black/80 blur-xl pointer-events-none"
+          style={{
+            transform: 'rotateX(75deg) translateY(70px)',
+          }}
+          className="absolute -bottom-8 w-[220px] xs:w-[260px] sm:w-[340px] lg:w-[420px] h-[55px] rounded-full bg-black/95 blur-2xl pointer-events-none"
           aria-hidden="true"
         />
       </motion.div>
@@ -234,10 +256,10 @@ function SteamWisp({
     <motion.div
       initial={{ opacity: 0, y: 0, scale: scale * 0.6, x: 0 }}
       animate={{
-        opacity: [0, 0.4, 0.3, 0],
-        y: [0, -35, -95, -160],
+        opacity: [0, 0.45, 0.35, 0],
+        y: [0, -40, -100, -170],
         x: [0, drift * 0.4, drift, drift * 1.3],
-        scale: [scale * 0.6, scale * 1.05, scale * 1.6, scale * 2.2],
+        scale: [scale * 0.6, scale * 1.1, scale * 1.6, scale * 2.3],
         rotate: [0, drift > 0 ? 12 : -12],
       }}
       transition={{
