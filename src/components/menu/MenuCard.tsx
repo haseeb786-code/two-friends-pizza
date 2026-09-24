@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, Check, Camera, Image as ImageIcon } from 'lucide-react';
+import { Plus, Minus, Check, Image as ImageIcon } from 'lucide-react';
 import { Product, ProductSizeOption } from '@/types/menu';
 import { useCartStore } from '@/store/cartStore';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -116,16 +116,6 @@ export function MenuCard({ product, showSizes = true }: MenuCardProps) {
             Popular
           </span>
         )}
-
-        {/* Upload / Custom Image Option Button */}
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="absolute top-2 right-2 w-6 h-6 rounded-md bg-black/60 backdrop-blur-md border border-white/10 text-white/70 hover:text-white hover:bg-black/90 flex items-center justify-center opacity-0 group-hover:opacity-100 sm:group-hover:opacity-100 transition-opacity duration-150 cursor-pointer"
-          title="Upload or change card photos (up to 2)"
-          aria-label="Upload custom food photos"
-        >
-          <Camera className="w-3 h-3" />
-        </button>
 
         {/* ── Dual Image Indicators (If 2 images available) ── */}
         {imageList.length > 1 && (

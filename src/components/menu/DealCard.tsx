@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Crown, Check, ArrowRight, Camera, Image as ImageIcon } from 'lucide-react';
+import { Crown, Check, ArrowRight, Image as ImageIcon } from 'lucide-react';
 import { Deal } from '@/types/deals';
 import { cn } from '@/lib/utils';
 import { BUSINESS_CONFIG } from '@/config/business';
@@ -107,16 +107,6 @@ export function DealCard({ deal }: DealCardProps) {
             Members Deal
           </span>
         )}
-
-        {/* Upload Custom Image Button */}
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="absolute top-2.5 right-2.5 w-6 h-6 rounded-md bg-black/60 backdrop-blur-md border border-white/10 text-white/70 hover:text-white hover:bg-black/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 cursor-pointer"
-          title="Upload or change deal photos (up to 2)"
-          aria-label="Upload custom deal photos"
-        >
-          <Camera className="w-3 h-3" />
-        </button>
 
         {/* Dual Image Indicators */}
         {imageList.length > 1 && (
