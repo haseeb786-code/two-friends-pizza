@@ -7,7 +7,8 @@ import { QuantityControl } from '@/components/menu/MenuCard';
 import { cartDrawerVariants } from '@/lib/motion';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { CheckoutModal } from './CheckoutModal';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ interface CartDrawerProps {
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const prefersReducedMotion = useReducedMotion();
   const { items, increaseQuantity, decreaseQuantity, removeItem, getSubtotal, getTotal, deliveryFee, getItemCount } = useCartStore();
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   const subtotal = getSubtotal();
@@ -182,7 +184,8 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   <span className="text-amber-400 tabular-nums">{symbol}{total.toLocaleString()}</span>
                 </div>
                 <button
-                  className="w-full bg-flame-600 active:bg-flame-700 text-white font-semibold h-12 rounded-xl transition-colors duration-150 cursor-pointer mt-1 text-[14px]"
+                  onClick={() => setCheckoutOpen(true)}
+                  className="w-full bg-flame-600 hover:bg-flame-500 active:bg-flame-700 text-white font-semibold h-12 rounded-xl transition-colors duration-150 cursor-pointer mt-1 text-[14px]"
                   aria-label={`Proceed to checkout — Total: ${symbol}${total.toLocaleString()}`}
                 >
                   Proceed to Order
@@ -190,6 +193,12 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               </div>
             )}
           </motion.div>
+
+          {/* Customer Details Checkout Modal */}
+          <CheckoutModal
+            isOpen={checkoutOpen}
+            onClose={() => setCheckoutOpen(false)}
+          />
         </>
       )}
     </AnimatePresence>

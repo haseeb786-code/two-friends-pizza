@@ -49,4 +49,17 @@ export interface BusinessConfig {
     code: string;
     defaultDeliveryFee: number;
   };
+  ordering: {
+    minOrderAmount: number;
+    delivery: {
+      freeWithinKm: number;
+      beyondKmFee: number;
+    };
+    coverageAreas: string[];
+    paymentMethods: Array<{
+      id: string;
+      name: string;
+      detail: string;
+    }>;
+  };
 }

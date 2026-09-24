@@ -55,4 +55,19 @@ export const BUSINESS_CONFIG: BusinessConfig = {
     code: 'PKR',
     defaultDeliveryFee: 0,
   },
+
+  ordering: {
+    minOrderAmount: 1000,
+    delivery: {
+      freeWithinKm: 5,
+      beyondKmFee: 100,
+    },
+    coverageAreas: ['Rawat City', 'Main Chak Belli Road', 'Chota Mera', 'Nearby Areas'],
+    paymentMethods: [
+      { id: 'cod', name: 'Cash on Delivery (Cash)', detail: 'Pay cash to rider upon delivery' },
+      { id: 'jazzcash', name: 'JazzCash', detail: 'Account: 0331-0479696 (Two Friends Pizza)' },
+      { id: 'easypaisa', name: 'EasyPaisa', detail: 'Account: 0331-0479696 (Two Friends Pizza)' },
+      { id: 'bank', name: 'Bank Transfer', detail: 'Account details provided via WhatsApp: 0331-0479696' },
+    ],
+  },
 };
