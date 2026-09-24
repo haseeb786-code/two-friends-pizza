@@ -3,11 +3,8 @@ import { MenuSection } from '@/components/menu/MenuSection';
 
 export default function HomePage() {
   return (
-    <main id="main-content">
-      {/* Hero Section */}
+    <main>
       <HeroSection />
-
-      {/* Full Menu Section */}
       <MenuSection />
     </main>
   );
