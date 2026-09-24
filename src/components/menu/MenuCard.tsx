@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, Check } from 'lucide-react';
+import { Plus, Minus, Check, Camera, Image as ImageIcon } from 'lucide-react';
 import { Product, ProductSizeOption } from '@/types/menu';
 import { useCartStore } from '@/store/cartStore';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -15,19 +16,28 @@ interface MenuCardProps {
 }
 
 /**
- * Premium Product Card — Mobile-First
- * ────────────────────────────────────
- * Horizontal layout on mobile (image left, content right) for thumb-friendly scanning.
- * Vertical card on ≥sm for grid layouts.
- * Size selector: compact inline pills.
- * Price: animates on size change without layout shift.
- * Add-to-cart: ripple-free tap with confirmation state.
- * Touch targets: all interactive elements ≥44px tap area.
+ * Premium Product Card — Mobile-First with Dual Image & Upload Support
+ * ───────────────────────────────────────────────────────────────────
+ * - Curated high-resolution food photography.
+ * - Supports up to 2 images per card with elegant switch indicator.
+ * - Interactive image upload option for custom photos.
+ * - Zero layout shift or image distortion via `object-fit: cover`.
+ * - Horizontal layout on mobile (image left, content right), vertical on sm+.
  */
 export function MenuCard({ product, showSizes = true }: MenuCardProps) {
   const prefersReducedMotion = useReducedMotion();
   const { addItem } = useCartStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const hasSizes = product.sizes.length > 0 && showSizes;
+
+  // Image collection: product default images or uploaded images (up to 2)
+  const defaultImages = product.images && product.images.length > 0 
+    ? product.images.slice(0, 2) 
+    : [product.image];
+  
+  const [imageList, setImageList] = useState<string[]>(defaultImages);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [imageError, setImageError] = useState(false);
 
   const [selectedSize, setSelectedSize] = useState<ProductSizeOption | null>(
     hasSizes ? (product.sizes.find((s) => s.isDefault) ?? product.sizes[0]) : null
@@ -42,44 +52,127 @@ export function MenuCard({ product, showSizes = true }: MenuCardProps) {
     setTimeout(() => setAdded(false), 1400);
   }, [addItem, product, selectedSize]);
 
+  // Handle local image upload (up to 2 images)
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const newUrls: string[] = [];
+    const maxFiles = Math.min(files.length, 2);
+    for (let i = 0; i < maxFiles; i++) {
+      newUrls.push(URL.createObjectURL(files[i]));
+    }
+
+    setImageList(newUrls);
+    setActiveImageIndex(0);
+    setImageError(false);
+  };
+
   const { symbol } = BUSINESS_CONFIG.currency;
+  const currentImage = imageList[activeImageIndex] || product.image;
 
   return (
     <article
-      className="group relative flex flex-row sm:flex-col bg-obsidian-900/80 border border-white/[0.06] rounded-xl sm:rounded-2xl overflow-hidden transition-colors duration-200 hover:border-white/[0.12]"
+      className="group relative flex flex-row sm:flex-col bg-obsidian-900/90 border border-white/[0.06] rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-200 hover:border-white/[0.14] hover:shadow-lg hover:shadow-black/40"
       aria-label={`${product.name} — ${symbol}${displayPrice}`}
     >
-      {/* ── Image area ── */}
-      <div className="relative w-[100px] sm:w-full aspect-square sm:aspect-[4/3] bg-obsidian-850 overflow-hidden flex-shrink-0">
-        {/* Emoji placeholder — real photos drop in later */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-3xl sm:text-4xl opacity-20 select-none" aria-hidden="true">
-            {getCategoryEmoji(product.category)}
-          </span>
-        </div>
-        {/* Featured badge */}
+      {/* Hidden file input for up to 2 image uploads */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleImageUpload}
+        accept="image/*"
+        multiple
+        className="hidden"
+        aria-hidden="true"
+      />
+
+      {/* ── Image Area ── */}
+      <div className="relative w-[110px] sm:w-full aspect-square sm:aspect-[4/3] bg-obsidian-850 overflow-hidden flex-shrink-0">
+        {!imageError && currentImage ? (
+          <Image
+            src={currentImage}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 110px, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={() => setImageError(true)}
+            priority={product.isFeatured}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-obsidian-850">
+            <span className="text-3xl sm:text-4xl opacity-25 select-none" aria-hidden="true">
+              {getCategoryEmoji(product.category)}
+            </span>
+          </div>
+        )}
+
+        {/* Subtle dark vignette on top/bottom for contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+
+        {/* Popular / Featured Badge */}
         {product.isFeatured && (
-          <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-amber-500 text-obsidian-950 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md">
+          <span className="absolute top-2 left-2 bg-amber-500 text-obsidian-950 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow-sm">
             Popular
           </span>
         )}
+
+        {/* Upload / Custom Image Option Button */}
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="absolute top-2 right-2 w-6 h-6 rounded-md bg-black/60 backdrop-blur-md border border-white/10 text-white/70 hover:text-white hover:bg-black/90 flex items-center justify-center opacity-0 group-hover:opacity-100 sm:group-hover:opacity-100 transition-opacity duration-150 cursor-pointer"
+          title="Upload or change card photos (up to 2)"
+          aria-label="Upload custom food photos"
+        >
+          <Camera className="w-3 h-3" />
+        </button>
+
+        {/* ── Dual Image Indicators (If 2 images available) ── */}
+        {imageList.length > 1 && (
+          <div className="absolute bottom-1.5 inset-x-0 flex items-center justify-center gap-1 z-10">
+            {imageList.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImageIndex(idx);
+                }}
+                className={cn(
+                  'h-1.5 rounded-full transition-all duration-200 cursor-pointer',
+                  activeImageIndex === idx
+                    ? 'w-4 bg-white shadow-sm'
+                    : 'w-1.5 bg-white/40 hover:bg-white/70'
+                )}
+                aria-label={`View photo ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* ── Content ── */}
-      <div className="flex flex-col flex-1 min-w-0 p-3 sm:p-4 gap-2 sm:gap-2.5">
-        {/* Name + description */}
+      {/* ── Content Area ── */}
+      <div className="flex flex-col flex-1 min-w-0 p-3 sm:p-4 gap-2">
+        {/* Name + Description */}
         <div className="min-w-0">
-          <h3 className="font-heading text-[14px] sm:text-[15px] font-semibold text-white leading-tight truncate">
-            {product.name}
-          </h3>
-          <p className="text-[11px] sm:text-xs text-obsidian-500 mt-0.5 leading-relaxed line-clamp-2 hidden sm:block">
+          <div className="flex items-center justify-between gap-1">
+            <h3 className="font-heading text-[14px] sm:text-[15px] font-semibold text-white leading-tight truncate">
+              {product.name}
+            </h3>
+            {imageList.length > 1 && (
+              <span className="text-[9px] text-obsidian-500 font-medium tabular-nums hidden sm:inline-flex items-center gap-0.5">
+                <ImageIcon className="w-2.5 h-2.5" />
+                {activeImageIndex + 1}/{imageList.length}
+              </span>
+            )}
+          </div>
+          <p className="text-[11px] sm:text-xs text-obsidian-400 mt-1 leading-relaxed line-clamp-2">
             {product.description}
           </p>
         </div>
 
-        {/* Size selector */}
+        {/* Size Selector */}
         {hasSizes && (
-          <div className="flex flex-wrap gap-1" role="group" aria-label="Select size">
+          <div className="flex flex-wrap gap-1 mt-auto pt-1" role="group" aria-label="Select size">
             {product.sizes.map((size) => {
               const isSelected = selectedSize?.id === size.id;
               return (
@@ -89,8 +182,8 @@ export function MenuCard({ product, showSizes = true }: MenuCardProps) {
                   className={cn(
                     'h-7 px-2.5 text-[10px] sm:text-[11px] font-semibold rounded-md border transition-all duration-100 cursor-pointer',
                     isSelected
-                      ? 'bg-white text-obsidian-950 border-white'
-                      : 'bg-transparent text-obsidian-400 border-white/[0.08] active:bg-white/5'
+                      ? 'bg-white text-obsidian-950 border-white shadow-sm'
+                      : 'bg-transparent text-obsidian-400 border-white/[0.08] hover:border-white/20 active:bg-white/5'
                   )}
                   aria-pressed={isSelected}
                   aria-label={`${size.name} — ${symbol}${size.price}`}
@@ -102,16 +195,16 @@ export function MenuCard({ product, showSizes = true }: MenuCardProps) {
           </div>
         )}
 
-        {/* Price + Add */}
-        <div className="flex items-center justify-between gap-2 mt-auto">
+        {/* Price + Add to Cart */}
+        <div className="flex items-center justify-between gap-2 mt-auto pt-1 border-t border-white/[0.04]">
           <AnimatePresence mode="wait">
             <motion.span
               key={displayPrice}
-              initial={prefersReducedMotion ? false : { opacity: 0, y: -6 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 6 }}
+              exit={{ opacity: 0, y: 4 }}
               transition={{ duration: 0.12 }}
-              className="font-heading text-lg sm:text-xl font-bold text-amber-400 leading-none"
+              className="font-heading text-base sm:text-lg font-bold text-amber-400 leading-none tabular-nums"
               aria-live="polite"
               aria-label={`Price: ${symbol}${displayPrice}`}
             >
@@ -121,12 +214,12 @@ export function MenuCard({ product, showSizes = true }: MenuCardProps) {
 
           <motion.button
             onClick={handleAddToCart}
-            whileTap={prefersReducedMotion ? {} : { scale: 0.92 }}
+            whileTap={prefersReducedMotion ? {} : { scale: 0.94 }}
             className={cn(
               'flex items-center justify-center gap-1 h-8 sm:h-9 px-3 sm:px-3.5 rounded-lg text-[11px] sm:text-xs font-semibold transition-colors duration-150 cursor-pointer flex-shrink-0',
               added
                 ? 'bg-basil-500 text-white'
-                : 'bg-flame-600 active:bg-flame-700 text-white'
+                : 'bg-flame-600 hover:bg-flame-500 active:bg-flame-700 text-white'
             )}
             aria-label={added ? `${product.name} added to cart` : `Add ${product.name} to cart`}
           >
@@ -135,7 +228,7 @@ export function MenuCard({ product, showSizes = true }: MenuCardProps) {
             ) : (
               <Plus className="w-3.5 h-3.5" aria-hidden="true" />
             )}
-            <span className="hidden xs:inline">{added ? 'Added' : 'Add'}</span>
+            <span>{added ? 'Added' : 'Add'}</span>
           </motion.button>
         </div>
       </div>
@@ -162,20 +255,20 @@ export function QuantityControl({
   onDecrease: () => void;
 }) {
   return (
-    <div className="flex items-center gap-0" role="group" aria-label="Adjust quantity">
+    <div className="flex items-center gap-0 border border-white/10 rounded-lg overflow-hidden" role="group" aria-label="Adjust quantity">
       <button
         onClick={onDecrease}
-        className="w-8 h-8 flex items-center justify-center rounded-l-lg bg-obsidian-800 active:bg-obsidian-700 text-white transition-colors cursor-pointer"
+        className="w-8 h-8 flex items-center justify-center bg-obsidian-800 hover:bg-obsidian-750 active:bg-obsidian-700 text-white transition-colors cursor-pointer"
         aria-label="Decrease quantity"
       >
         <Minus className="w-3 h-3" aria-hidden="true" />
       </button>
-      <span className="w-8 h-8 flex items-center justify-center bg-obsidian-800/60 text-[13px] font-bold text-white" aria-live="polite">
+      <span className="w-8 h-8 flex items-center justify-center bg-obsidian-850 text-[13px] font-bold text-white tabular-nums" aria-live="polite">
         {quantity}
       </span>
       <button
         onClick={onIncrease}
-        className="w-8 h-8 flex items-center justify-center rounded-r-lg bg-obsidian-800 active:bg-obsidian-700 text-white transition-colors cursor-pointer"
+        className="w-8 h-8 flex items-center justify-center bg-obsidian-800 hover:bg-obsidian-750 active:bg-obsidian-700 text-white transition-colors cursor-pointer"
         aria-label="Increase quantity"
       >
         <Plus className="w-3 h-3" aria-hidden="true" />

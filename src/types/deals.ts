@@ -38,6 +38,6 @@ export interface Deal {
   membersOnly: boolean;
   isFeatured: boolean;
   displayOrder: number;
-  /** Placeholder path — real food photography drops in without restructuring */
   image: string;
+  images?: string[];
 }

@@ -4,14 +4,6 @@ import { Deal } from '@/types/deals';
  * Two Friends Pizza — All Deals
  *
  * ALL prices owner-verified against printed menu card. Do not recalculate or alter.
- *
- * Assumptions (documented):
- *  - "Regular Pizza" in Deal-1/2/3 refers to any Regular-size pizza (any flavour).
- *    No specific flavour is specified in the provided data.
- *  - "Drink (350ml)" / "Drink (1.5L)" are deal inclusions only — not orderable
- *    as standalone products in this phase.
- *  - Members-Only deals (Deal-1 through Deal-6) carry membersOnly: true.
- *    No login gate is implemented at this phase — marketing label only.
  */
 
 export const DEALS: Deal[] = [
@@ -35,7 +27,11 @@ export const DEALS: Deal[] = [
     membersOnly: false,
     isFeatured: true,
     displayOrder: 1,
-    image: '/images/deals/deal-a1.jpg',
+    image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1648896172605-728b7e231165?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-a2',
@@ -51,7 +47,11 @@ export const DEALS: Deal[] = [
     membersOnly: false,
     isFeatured: false,
     displayOrder: 2,
-    image: '/images/deals/deal-a2.jpg',
+    image: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-a3',
@@ -68,7 +68,11 @@ export const DEALS: Deal[] = [
     membersOnly: false,
     isFeatured: false,
     displayOrder: 3,
-    image: '/images/deals/deal-a3.jpg',
+    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=800&q=80',
+    ],
   },
 
   // ══════════════════════════════════════════════
@@ -92,7 +96,11 @@ export const DEALS: Deal[] = [
     membersOnly: false,
     isFeatured: true,
     displayOrder: 10,
-    image: '/images/deals/deal-friend-special.jpg',
+    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-birthday',
@@ -110,7 +118,11 @@ export const DEALS: Deal[] = [
     membersOnly: false,
     isFeatured: true,
     displayOrder: 11,
-    image: '/images/deals/deal-birthday.jpg',
+    image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-party',
@@ -127,7 +139,11 @@ export const DEALS: Deal[] = [
     membersOnly: false,
     isFeatured: false,
     displayOrder: 12,
-    image: '/images/deals/deal-party.jpg',
+    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-7',
@@ -144,7 +160,11 @@ export const DEALS: Deal[] = [
     membersOnly: false,
     isFeatured: false,
     displayOrder: 13,
-    image: '/images/deals/deal-7.jpg',
+    image: 'https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-8',
@@ -160,7 +180,11 @@ export const DEALS: Deal[] = [
     membersOnly: false,
     isFeatured: false,
     displayOrder: 14,
-    image: '/images/deals/deal-8.jpg',
+    image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=800&q=80',
+    ],
   },
 
   // ══════════════════════════════════════════════
@@ -183,7 +207,11 @@ export const DEALS: Deal[] = [
     membersOnly: true,
     isFeatured: false,
     displayOrder: 20,
-    image: '/images/deals/deal-1.jpg',
+    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-2',
@@ -200,7 +228,11 @@ export const DEALS: Deal[] = [
     membersOnly: true,
     isFeatured: false,
     displayOrder: 21,
-    image: '/images/deals/deal-2.jpg',
+    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1648896172605-728b7e231165?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-3',
@@ -217,7 +249,11 @@ export const DEALS: Deal[] = [
     membersOnly: true,
     isFeatured: false,
     displayOrder: 22,
-    image: '/images/deals/deal-3.jpg',
+    image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-4',
@@ -234,7 +270,11 @@ export const DEALS: Deal[] = [
     membersOnly: true,
     isFeatured: false,
     displayOrder: 23,
-    image: '/images/deals/deal-4.jpg',
+    image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-5',
@@ -251,7 +291,11 @@ export const DEALS: Deal[] = [
     membersOnly: true,
     isFeatured: false,
     displayOrder: 24,
-    image: '/images/deals/deal-5.jpg',
+    image: 'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=800&q=80',
+    ],
   },
   {
     id: 'deal-6',
@@ -268,7 +312,11 @@ export const DEALS: Deal[] = [
     membersOnly: true,
     isFeatured: true,
     displayOrder: 25,
-    image: '/images/deals/deal-6.jpg',
+    image: 'https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=800&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80',
+    ],
   },
 ];
 

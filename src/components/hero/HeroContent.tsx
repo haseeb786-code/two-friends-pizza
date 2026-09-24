@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { ShoppingBag, ChevronDown, Flame, Star } from 'lucide-react';
+import { ShoppingBag, ChevronDown, Sparkles, Star } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import {
-  pageTransitionVariants,
   sectionRevealVariants,
   staggerContainerVariants,
 } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { BUSINESS_CONFIG } from '@/config/business';
 
 interface HeroContentProps {
   onOrderClick?: () => void;
@@ -18,14 +18,13 @@ interface HeroContentProps {
 
 /**
  * Hero Typography & CTA Content Layer
- * Sits in the left/center column — always above the 3D canvas z-index
- * so the CTA is never obscured by visual effects.
+ * Tailored 100% to Two Friends Pizza — "Dosti Ka Slice"
+ * No unwanted artisanal/wood-fired fluff — pure fast-food excellence.
  */
 export function HeroContent({ onOrderClick }: HeroContentProps) {
   const prefersReducedMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
 
-  // Parallax scroll hook — text drifts up slightly as user scrolls down
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 400], [0, prefersReducedMotion ? 0 : -40]);
 
@@ -36,6 +35,17 @@ export function HeroContent({ onOrderClick }: HeroContentProps) {
   const revealVariants = prefersReducedMotion
     ? { hidden: { opacity: 0 }, visible: { opacity: 1 } }
     : sectionRevealVariants;
+
+  const handleOrderClick = () => {
+    if (onOrderClick) {
+      onOrderClick();
+    } else {
+      const menuEl = document.getElementById('menu');
+      if (menuEl) {
+        menuEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <motion.div
@@ -49,21 +59,21 @@ export function HeroContent({ onOrderClick }: HeroContentProps) {
         animate="visible"
         className="space-y-6"
       >
-        {/* Status Pill */}
+        {/* Brand Tagline Badge */}
         <motion.div variants={revealVariants}>
-          <Badge variant="flame" className="flex items-center gap-1.5 w-fit">
-            <Flame className="w-3 h-3" aria-hidden="true" />
-            <span>Wood-Fired · Flame-Grilled</span>
+          <Badge variant="flame" className="flex items-center gap-1.5 w-fit text-xs font-semibold px-3 py-1">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
+            <span>Two Friends Pizza · Dosti Ka Slice</span>
           </Badge>
         </motion.div>
 
-        {/* Primary Headline — strong hierarchy */}
+        {/* Primary Headline */}
         <motion.div variants={revealVariants} className="space-y-1">
-          <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.02] tracking-tight text-white">
-            Two Friends.
+          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-white">
+            Fresh, Tasty,
             <br />
             <span className="text-amber-400">
-              One Fire.
+              Always.
             </span>
           </h1>
         </motion.div>
@@ -71,17 +81,17 @@ export function HeroContent({ onOrderClick }: HeroContentProps) {
         {/* Sub-headline */}
         <motion.p
           variants={revealVariants}
-          className="text-base sm:text-lg text-obsidian-300 max-w-[400px] leading-relaxed"
+          className="text-sm sm:text-base text-obsidian-300 max-w-[420px] leading-relaxed"
         >
-          Artisanal wood-fired pizzas and flame-grilled gourmet burgers. Handcrafted. Never compromised.
+          Signature loaded pizzas, crispy zinger burgers, stuffed shawarmas, and sizzling combo deals in Rawat. Friends · Food · Good Times.
         </motion.p>
 
-        {/* Social proof micro-copy */}
+        {/* Location / Social Proof */}
         <motion.div
           variants={revealVariants}
-          className="flex items-center gap-2 text-sm text-obsidian-400"
+          className="flex items-center gap-2 text-xs sm:text-sm text-obsidian-400"
         >
-          <div className="flex" aria-label="Rated 5 stars">
+          <div className="flex" aria-label="5 star rating">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
@@ -90,10 +100,10 @@ export function HeroContent({ onOrderClick }: HeroContentProps) {
               />
             ))}
           </div>
-          <span>Loved by the neighbourhood</span>
+          <span>Best Fast Food on Main Chak Belli Road, Rawat</span>
         </motion.div>
 
-        {/* CTA Row — clearly separated, never obscured */}
+        {/* CTA Row */}
         <motion.div
           variants={revealVariants}
           className="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-2"
@@ -102,23 +112,22 @@ export function HeroContent({ onOrderClick }: HeroContentProps) {
             variant="primary"
             size="lg"
             leftIcon={<ShoppingBag className="w-5 h-5" />}
-            onClick={onOrderClick}
-            className="min-w-[160px] text-base font-semibold"
-            aria-label="Order Now — opens menu"
+            onClick={handleOrderClick}
+            className="min-w-[160px] text-sm sm:text-base font-semibold shadow-lg shadow-flame-900/30"
+            aria-label="Order Now — scroll to menu"
           >
             Order Now
           </Button>
-          <Button
-            variant="ghost"
-            size="lg"
-            className="text-obsidian-300 hover:text-white text-sm"
+          <a
+            href="#menu"
+            className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-white/10 text-obsidian-300 hover:text-white hover:border-white/20 text-sm font-medium transition-colors"
           >
             View Menu
-          </Button>
+          </a>
         </motion.div>
       </motion.div>
 
-      {/* Scroll indicator — bottom of hero */}
+      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -127,7 +136,7 @@ export function HeroContent({ onOrderClick }: HeroContentProps) {
         aria-hidden="true"
       >
         <ChevronDown className="w-4 h-4 animate-bounce" />
-        <span>Scroll to explore</span>
+        <span>Explore Menu</span>
       </motion.div>
     </motion.div>
   );

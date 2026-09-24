@@ -54,8 +54,10 @@ export interface Product {
   /** Sub-grouping label within a category — used for "Somewhat Local" vs specials */
   subCategory?: string;
   description: string;
-  /** Placeholder path — real food photography drops in without restructuring */
+  /** Primary image URL */
   image: string;
+  /** Optional array of up to 2 images for multi-angle/dual presentation */
+  images?: string[];
   /**
    * For single-price items (burgers, shawarma, fries, etc.) this is the price.
    * For pizzas, use sizes[] with direct prices per size; basePrice = Reg price.

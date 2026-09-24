@@ -9,7 +9,7 @@ export const baseMetadata: Metadata = {
     template: '%s | Two Friends Pizza',
   },
   description:
-    'Two Friends Pizza — Dosti Ka Slice. Wood-fired pizzas, flame-grilled burgers, shawarma, crispy and deals in Rawat. Order now: 0331-0479696.',
+    'Two Friends Pizza — Dosti Ka Slice. Freshly baked pizzas, crispy zinger burgers, fresh shawarma, crispy chicken, and deals in Rawat. Order now: 0331-0479696.',
   keywords: [
     'two friends pizza',
     'dosti ka slice',
@@ -45,7 +45,7 @@ export const baseMetadata: Metadata = {
     siteName: 'Two Friends Pizza',
     title: 'Two Friends Pizza — Dosti Ka Slice',
     description:
-      'Wood-fired pizzas, flame-grilled burgers, shawarma and deals in Rawat. Order: 0331-0479696.',
+      'Freshly baked pizzas, crispy zinger burgers, fresh shawarma, and deals in Rawat. Order: 0331-0479696.',
     images: [
       {
         url: '/og-image.jpg',
@@ -59,7 +59,7 @@ export const baseMetadata: Metadata = {
     card: 'summary_large_image',
     title: 'Two Friends Pizza — Dosti Ka Slice',
     description:
-      'Wood-fired pizzas, flame-grilled burgers, shawarma and deals in Rawat. Order: 0331-0479696.',
+      'Freshly baked pizzas, crispy zinger burgers, fresh shawarma, and deals in Rawat. Order: 0331-0479696.',
     images: ['/og-image.jpg'],
   },
   alternates: {
@@ -83,7 +83,7 @@ export const restaurantJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Restaurant',
   name: 'Two Friends Pizza',
-  description: 'Dosti Ka Slice — Wood-fired pizzas, flame-grilled burgers, shawarma and deals.',
+  description: 'Dosti Ka Slice — Fresh pizzas, crispy burgers, shawarma and deals.',
   url: SITE_URL,
   telephone: '03310479696',
   servesCuisine: ['Pizza', 'Burger', 'Shawarma', 'Fast Food'],
