@@ -21,40 +21,40 @@ export function StorySection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          {/* Left Column: Visual Collage with Badge */}
-          <div className="lg:col-span-6 relative">
-            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
+          {/* Left Column: Real Restaurant Visual */}
+          <div className="lg:col-span-6 space-y-4">
+            <div className="relative aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group bg-obsidian-900">
               <Image
                 src="/images/two-friends-restaurant.png"
                 alt="Two Friends Pizza Real Outlet on Main Chak Belli Road, Rawat"
                 fill
+                unoptimized
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent" />
 
               {/* Verified Real Outlet Badge */}
-              <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-amber-500/30 text-amber-300 text-[11px] font-semibold shadow-xl">
+              <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/85 backdrop-blur-md border border-amber-500/30 text-amber-300 text-[11px] font-semibold shadow-xl">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span>Our Real Outlet · Main Chak Belli Road, Rawat</span>
               </div>
+            </div>
 
-              {/* Floating Story Stat Card */}
-              <div className="absolute bottom-6 left-6 right-6 p-4 sm:p-5 rounded-2xl bg-black/80 backdrop-blur-md border border-white/15">
-                <div className="grid grid-cols-3 gap-2 text-center divide-x divide-white/10">
-                  <div>
-                    <span className="block text-xl sm:text-2xl font-black text-amber-400">100%</span>
-                    <span className="text-[10px] sm:text-xs text-obsidian-400 font-medium">Real Mozzarella</span>
-                  </div>
-                  <div>
-                    <span className="block text-xl sm:text-2xl font-black text-white">32+</span>
-                    <span className="text-[10px] sm:text-xs text-obsidian-400 font-medium">Fresh Items</span>
-                  </div>
-                  <div>
-                    <span className="block text-xl sm:text-2xl font-black text-flame-400">14</span>
-                    <span className="text-[10px] sm:text-xs text-obsidian-400 font-medium">Dosti Combos</span>
-                  </div>
+            {/* Clean Stats Bar (Underneath photo so restaurant entrance and signage are 100% clear) */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md shadow-xl">
+              <div className="grid grid-cols-3 gap-2 text-center divide-x divide-white/10">
+                <div>
+                  <span className="block text-xl sm:text-2xl font-black text-amber-400">100%</span>
+                  <span className="text-[10px] sm:text-xs text-obsidian-400 font-medium">Real Mozzarella</span>
+                </div>
+                <div>
+                  <span className="block text-xl sm:text-2xl font-black text-white">32+</span>
+                  <span className="text-[10px] sm:text-xs text-obsidian-400 font-medium">Fresh Items</span>
+                </div>
+                <div>
+                  <span className="block text-xl sm:text-2xl font-black text-flame-400">14</span>
+                  <span className="text-[10px] sm:text-xs text-obsidian-400 font-medium">Dosti Combos</span>
                 </div>
               </div>
             </div>
