@@ -55,7 +55,7 @@ export async function GET() {
     `).all() as any[];
 
     // 5. Product Sales Frequency & Revenue (from items_json)
-    const orders = db.prepare('SELECT items_json FROM orders WHERE status != "cancelled"').all() as any[];
+    const orders = db.prepare("SELECT items_json FROM orders WHERE status != 'cancelled'").all() as any[];
     const productStats: Record<string, { name: string; count: number; revenue: number }> = {};
 
     orders.forEach((o) => {
