@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { ShoppingBag, Phone, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/cartStore';
@@ -17,6 +18,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
  * Glass-effect bg with subtle border — no heavy blur.
  */
 export function SiteHeader() {
+  const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,6 +27,10 @@ export function SiteHeader() {
   const rawItemCount = useCartStore((s) => s.getItemCount());
   const itemCount = mounted ? rawItemCount : 0;
   const { name, contact } = BUSINESS_CONFIG;
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   useEffect(() => {
     setMounted(true);
