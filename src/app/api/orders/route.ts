@@ -150,3 +150,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export async function DELETE() {
+  try {
+    db.prepare('DELETE FROM orders').run();
+    db.prepare('DELETE FROM customers').run();
+    return NextResponse.json({ success: true, message: 'All demo orders and customer records cleared successfully' });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}

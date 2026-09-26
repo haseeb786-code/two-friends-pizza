@@ -35,6 +35,7 @@ import {
   Sparkles,
   ShieldAlert,
   SlidersHorizontal,
+  Trash2,
 } from 'lucide-react';
 
 type AdminTab = 'dashboard' | 'orders' | 'menu' | 'customers' | 'analytics' | 'marketing' | 'settings';
@@ -134,6 +135,20 @@ export default function AdminPage() {
     const interval = setInterval(loadAllData, 20000); // 20s auto-refresh
     return () => clearInterval(interval);
   }, [loadAllData]);
+
+  // Clear demo orders to start fresh at ₨0
+  const handleClearDemoData = async () => {
+    if (!window.confirm('Reset all demo orders and customer records to start completely fresh at ₨0?')) return;
+    try {
+      const res = await fetch('/api/orders', { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        await loadAllData();
+      }
+    } catch (e) {
+      console.error('Failed to clear demo data:', e);
+    }
+  };
 
   // Update order status
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
@@ -334,20 +349,41 @@ export default function AdminPage() {
             {/* Top Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h1 className="font-heading text-2xl sm:text-3xl font-bold text-white">
-                  Executive Dashboard
-                </h1>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h1 className="font-heading text-2xl sm:text-3xl font-bold text-white">
+                    Executive Dashboard
+                  </h1>
+                  {orders.length > 0 && (
+                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
+                      Demo / Test Data Active
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-obsidian-400 mt-1">
                   Real-time sales, order flow, and actionable business intelligence for Rawat
                 </p>
               </div>
-              <button
-                onClick={() => setActiveTab('orders')}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 text-obsidian-950 font-bold text-xs shadow-lg shadow-amber-500/20 hover:bg-amber-400 transition-all self-start sm:self-auto"
-              >
-                <ShoppingBag className="w-4 h-4" />
-                <span>Go to Live Orders ({analyticsData?.activeOrders || 0} active)</span>
-              </button>
+
+              <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+                {orders.length > 0 && (
+                  <button
+                    onClick={handleClearDemoData}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-red-500/20 border border-white/10 hover:border-red-500/30 text-obsidian-300 hover:text-red-300 text-xs font-semibold transition-all cursor-pointer"
+                    title="Reset sample orders to start fresh at ₨0"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Clear Demo Orders (Reset to ₨0)</span>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => setActiveTab('orders')}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 text-obsidian-950 font-bold text-xs shadow-lg shadow-amber-500/20 hover:bg-amber-400 transition-all cursor-pointer"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Go to Live Orders ({analyticsData?.activeOrders || 0} active)</span>
+                </button>
+              </div>
             </div>
 
             {/* KPI Cards */}
