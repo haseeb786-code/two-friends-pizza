@@ -61,11 +61,28 @@ export default function AdminPage() {
   // Selected Order for detail view modal
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
 
-  // Check auth session
+  // Check auth session on mount
   useEffect(() => {
-    // Check if session cookie exists
-    const hasCookie = document.cookie.includes('tf_admin_session=authenticated');
-    setIsAuthenticated(hasCookie);
+    async function checkAuth() {
+      try {
+        const localFlag = typeof window !== 'undefined' && localStorage.getItem('tf_admin_session') === 'true';
+        if (localFlag) {
+          setIsAuthenticated(true);
+          return;
+        }
+        const res = await fetch('/api/admin/auth');
+        const data = await res.json();
+        if (data.authenticated) {
+          setIsAuthenticated(true);
+          if (typeof window !== 'undefined') localStorage.setItem('tf_admin_session', 'true');
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (e) {
+        setIsAuthenticated(false);
+      }
+    }
+    checkAuth();
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -79,6 +96,7 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) {
+        if (typeof window !== 'undefined') localStorage.setItem('tf_admin_session', 'true');
         setIsAuthenticated(true);
         loadAllData();
       } else {
@@ -90,6 +108,7 @@ export default function AdminPage() {
   };
 
   const handleLogout = async () => {
+    if (typeof window !== 'undefined') localStorage.removeItem('tf_admin_session');
     await fetch('/api/admin/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -199,9 +218,18 @@ export default function AdminPage() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-obsidian-300 mb-1.5">
-                Admin Security Password
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-obsidian-300">
+                  Admin Security Password
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setPasswordInput('twofriends123')}
+                  className="text-[11px] text-amber-400 hover:text-amber-300 font-semibold cursor-pointer"
+                >
+                  Auto-fill Default
+                </button>
+              </div>
               <input
                 type="password"
                 value={passwordInput}
