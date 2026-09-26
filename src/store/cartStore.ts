@@ -214,6 +214,8 @@ export const useCartStore = create<CartState>()(
 
       clearCart: () => set({ items: [] }),
 
+      reorderItems: (items: CartItem[]) => set({ items: [...items] }),
+
       setDeliveryFee: (fee: number) => set({ deliveryFee: Math.max(0, fee) }),
 
       getSubtotal: () => get().items.reduce((sum, item) => sum + item.itemTotal, 0),

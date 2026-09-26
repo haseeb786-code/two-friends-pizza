@@ -198,9 +198,16 @@ export function SiteFooter() {
           <div className="flex items-center gap-4">
             <span>Dosti Ka Slice</span>
             <span>·</span>
+            <Link
+              href="/admin"
+              className="text-obsidian-500 hover:text-amber-400 transition-colors"
+            >
+              Kitchen & Order Admin
+            </Link>
+            <span>·</span>
             <button
               onClick={scrollToTop}
-              className="inline-flex items-center gap-1 hover:text-white transition-colors"
+              className="inline-flex items-center gap-1 hover:text-white transition-colors cursor-pointer"
               aria-label="Back to top"
             >
               <span>Back to Top</span>

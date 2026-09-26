@@ -34,6 +34,7 @@ export interface CartState {
   decreaseQuantity: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, newQuantity: number) => void;
   clearCart: () => void;
+  reorderItems: (items: CartItem[]) => void;
   setDeliveryFee: (fee: number) => void;
 
   // Computations
